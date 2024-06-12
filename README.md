@@ -90,7 +90,7 @@ tasks.withType<KspTaskNative> {
     options.add(
         SubpluginOption(
             "apoption",
-            "swiftInterop.skieCompilationFolderAbsolutePath=${skieCompilationAbsolutePath}"
+            "swiftInterop.swiftOutputPath=${skieCompilationAbsolutePath}"
         )
     )
 }

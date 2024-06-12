@@ -1,6 +1,6 @@
-import android.databinding.tool.ext.toCamelCase
-import co.touchlab.skie.plugin.util.lowerCamelCaseName
+import co.touchlab.skie.plugin.switflink.ProcessSwiftSourcesTask
 import com.google.devtools.ksp.gradle.KspTaskNative
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 
 plugins {
@@ -104,21 +104,36 @@ dependencies {
     "kspIosX64"(projects.composeSwiftInteropGenerator)
 }
 
-tasks.withType<KspTaskNative> {
-    val skieCompilationAbsolutePath = layout.buildDirectory.file("skie/compilation/").get().asFile.absolutePath
-    outputs.dir(skieCompilationAbsolutePath) // forces KSP task cache to sync with SKIE output folder
+tasks.withType<KspTaskNative>().configureEach {
+    val outputDirectory = layout.buildDirectory.dir("ksp/$target/swift")
 
-    options.add(SubpluginOption("apoption", "swiftInterop.targetName=${this.target}"))
+    outputs.dir(outputDirectory)
+
+    options.add(SubpluginOption("apoption", "swiftInterop.targetName=$target"))
     options.add(
-        SubpluginOption(
-            "apoption",
-            "swiftInterop.skieCompilationFolderAbsolutePath=${skieCompilationAbsolutePath}"
-        )
+        provider {
+            SubpluginOption(
+                "apoption",
+                "swiftInterop.swiftOutputPath=${outputDirectory.get().asFile.absolutePath}"
+            )
+        }
     )
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().all {
-    if(name != "kspCommonMainKotlinMetadata") {
+tasks.withType<ProcessSwiftSourcesTask>().configureEach {
+    val targetSuffix = name.substringAfter("skieProcessSwiftSources")
+
+    val kspTask = tasks.matching { it is KspTaskNative && it.name.substringAfter("kspKotlin") == targetSuffix }
+
+    inputs.files(
+        provider {
+            kspTask.map { it.outputs }
+        }
+    )
+}
+
+tasks.withType<KotlinCompile<*>>().configureEach {
+    if (name != "kspCommonMainKotlinMetadata") {
         dependsOn("kspCommonMainKotlinMetadata")
     }
 }

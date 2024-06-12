@@ -5,7 +5,6 @@ import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import net.pearx.kasechange.CaseFormat
-import net.pearx.kasechange.splitter.WordSplitter
 import net.pearx.kasechange.toCamelCase
 import java.io.File
 
@@ -13,11 +12,11 @@ sealed class GeneratorTarget {
     abstract val suffix: String
     class IOS(
         val targetName: String,
-        val skieCompilationFolder: File,
+        val swiftOutputPath: File,
     ) : GeneratorTarget() {
         override val suffix: String = ".ios"
 
-        fun getSwiftGenerationSourceDir(): File = File(skieCompilationFolder, "$targetName/main/swift/bundled").apply { mkdirs() }
+        fun getSwiftGenerationSourceDir(): File = swiftOutputPath.apply { mkdirs() }
     }
 
     class Common : GeneratorTarget() {
@@ -50,9 +49,9 @@ internal class SwiftUIViewInteropProcessorProvider : SymbolProcessorProvider {
             if(safeTargetName.contains("ios", ignoreCase = true)) {
                 GeneratorTarget.IOS(
                     targetName = safeTargetName.toCamelCase(from = CaseFormat.LOWER_UNDERSCORE),
-                    skieCompilationFolder = File(
-                        environment.options["swiftInterop.skieCompilationFolderAbsolutePath"]
-                            ?: throw IllegalArgumentException("Missing swiftInterop.skieCompilationFolderAbsolutePath, see docs")
+                    swiftOutputPath = File(
+                        environment.options["swiftInterop.swiftOutputPath"]
+                            ?: throw IllegalArgumentException("Missing swiftInterop.swiftOutputPath, see docs")
                     )
                 )
             } else {
