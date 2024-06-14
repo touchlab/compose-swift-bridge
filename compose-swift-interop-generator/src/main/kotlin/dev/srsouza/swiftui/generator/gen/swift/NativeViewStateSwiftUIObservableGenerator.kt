@@ -15,52 +15,58 @@ import io.outfoxx.swiftpoet.Modifier
 fun buildNativeViewStateSwiftUIObservableObjectFiles(
     allNativeViews: List<NativeViewInfo>
 ): List<SwiftFileSpec> {
-    return allNativeViews.map { nativeView ->
-        val type = Types.Members.nativeViewObservable(nativeView.functionName)
-        val classSpec = SwiftTypeSpec.classBuilder(type)
+    return allNativeViews.map { viewInfo ->
+        buildNativeViewStateSwiftUIObservableObject(viewInfo)
+    }
+}
 
-        classSpec.addSuperType(Types.Members.nativeViewDelegate(nativeView.functionName).toSwift())
-        classSpec.addSuperType(Types.Members.observableObject)
-        classSpec.addModifiers(Modifier.PUBLIC)
+private fun buildNativeViewStateSwiftUIObservableObject(
+    viewInfo: NativeViewInfo
+): SwiftFileSpec {
+    val type = Types.Members.nativeViewObservable(viewInfo.functionName)
+    val classSpec = SwiftTypeSpec.classBuilder(type)
 
-        val initBuilder = FunctionSpec.constructorBuilder()
-            .addModifiers(Modifier.PUBLIC)
+    classSpec.addSuperType(Types.Members.nativeViewDelegate(viewInfo.functionName).toSwift())
+    classSpec.addSuperType(Types.Members.observableObject)
+    classSpec.addModifiers(Modifier.PUBLIC)
 
-        val parameterExcludingModifier = nativeView.parameters.filterNot { it.isModifier }
-        for (param in parameterExcludingModifier) {
-            classSpec.addProperty(
-                SwiftPropertySpec.varBuilder(param.name, param.swiftType)
-                    .addAttribute("Published")
-                    .addModifiers(Modifier.PUBLIC)
-                    .build()
-            )
+    val initBuilder = FunctionSpec.constructorBuilder()
+        .addModifiers(Modifier.PUBLIC)
 
-            val paramSpec = SwiftParameterSpec.builder(
-                parameterName = param.name,
-                type = param.swiftType
-            ).apply {
-                if (param.swiftType is FunctionTypeName) {
-                    addAttribute("escaping")
-                }
+    val parameterExcludingModifier = viewInfo.parameters.filterNot { it.isModifier }
+    for (param in parameterExcludingModifier) {
+        classSpec.addProperty(
+            SwiftPropertySpec.varBuilder(param.name, param.swiftType)
+                .addAttribute("Published")
+                .addModifiers(Modifier.PUBLIC)
+                .build()
+        )
+
+        val paramSpec = SwiftParameterSpec.builder(
+            parameterName = param.name,
+            type = param.swiftType
+        ).apply {
+            if (param.swiftType is FunctionTypeName) {
+                addAttribute("escaping")
             }
-
-            initBuilder.addParameter(paramSpec.build())
-
-            initBuilder.addCode("self.${param.name} = ${param.name}\n")
-
-            classSpec.addFunction(
-                FunctionSpec.builder("update${param.namePascalCase}")
-                    .addModifiers(Modifier.PUBLIC)
-                    .addParameter(paramSpec.build())
-                    .addCode("self.${param.name} = ${param.name}\n")
-                    .build()
-            )
         }
 
-        classSpec.addFunction(initBuilder.build())
+        initBuilder.addParameter(paramSpec.build())
 
-        SwiftFileSpec.builder(type.simpleName)
-            .addType(classSpec.build())
-            .build()
+        initBuilder.addCode("self.${param.name} = ${param.name}\n")
+
+        classSpec.addFunction(
+            FunctionSpec.builder("update${param.namePascalCase}")
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(paramSpec.build())
+                .addCode("self.${param.name} = ${param.name}\n")
+                .build()
+        )
     }
+
+    classSpec.addFunction(initBuilder.build())
+
+    return SwiftFileSpec.builder(type.simpleName)
+        .addType(classSpec.build())
+        .build()
 }

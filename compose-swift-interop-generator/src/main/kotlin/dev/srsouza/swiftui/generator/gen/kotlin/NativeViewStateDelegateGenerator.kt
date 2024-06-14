@@ -8,24 +8,28 @@ import com.squareup.kotlinpoet.TypeSpec
 import dev.srsouza.swiftui.generator.gen.NativeViewInfo
 import dev.srsouza.swiftui.generator.util.Types
 
-fun buildNativeViewStateDelegateGeneratorFiles(
+fun buildNativeViewStateDelegateFiles(
     allNativeViews: List<NativeViewInfo>
 ): List<FileSpec> {
     return allNativeViews.map { viewInfo ->
-        val typeName = Types.Members.nativeViewDelegate(viewInfo.functionName)
-        val interfaceSpec = TypeSpec.interfaceBuilder(typeName)
+        buildNativeViewStateDelegate(viewInfo)
+    }
+}
 
-        for (param in viewInfo.parameters.filterNot { it.isModifier }) {
-            interfaceSpec.addFunction(
-                FunSpec.builder(
+private fun buildNativeViewStateDelegate(viewInfo: NativeViewInfo): FileSpec {
+    val typeName = Types.Members.nativeViewDelegate(viewInfo.functionName)
+    val interfaceSpec = TypeSpec.interfaceBuilder(typeName)
+
+    for (param in viewInfo.parameters.filterNot { it.isModifier }) {
+        interfaceSpec.addFunction(
+            FunSpec.builder(
                 "update${param.namePascalCase}"
             )
                 .addModifiers(KModifier.ABSTRACT)
                 .addParameter(ParameterSpec.builder(param.name, param.type).build())
                 .build())
-        }
-
-        FileSpec.builder(typeName).addType(interfaceSpec.build())
-            .build()
     }
+
+    return FileSpec.builder(typeName).addType(interfaceSpec.build())
+        .build()
 }

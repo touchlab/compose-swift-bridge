@@ -13,28 +13,35 @@ fun buildSwiftViewFactoryProtocolFiles(
 ): List<SwiftFileSpec> {
     return allNativeViews.groupBy { it.factoryName }
         .map { (factoryName, nativeViews) ->
-            val protocolName = Types.Members.nativeViewFactory(factoryName)
-            val protocolSpec = SwiftTypeSpec.protocolBuilder(protocolName)
-                .addModifiers(Modifier.PUBLIC)
-
-            for(viewInfo in nativeViews) {
-                val factoryFunctionName = Types.factoryFunctionName(viewInfo.functionName)
-
-                val funSpec = FunctionSpec.abstractBuilder(factoryFunctionName)
-
-                // TODO: allow disable Observable generation
-                funSpec.addParameter(
-                    name = "observable",
-                    type = Types.Members.nativeViewObservable(viewInfo.functionName)
-                )
-
-                funSpec.returns(Types.Members.swiftUIViewController)
-
-                protocolSpec.addFunction(funSpec.build())
-            }
-
-            SwiftFileSpec.builder(protocolName)
-                .addType(protocolSpec.build())
-                .build()
+            buildSwiftViewFactoryProtocol(factoryName, nativeViews)
         }
+}
+
+private fun buildSwiftViewFactoryProtocol(
+    factoryName: String,
+    nativeViews: List<NativeViewInfo>,
+): SwiftFileSpec {
+    val protocolName = Types.Members.nativeViewFactory(factoryName)
+    val protocolSpec = SwiftTypeSpec.protocolBuilder(protocolName)
+        .addModifiers(Modifier.PUBLIC)
+
+    for(viewInfo in nativeViews) {
+        val factoryFunctionName = Types.factoryFunctionName(viewInfo.functionName)
+
+        val funSpec = FunctionSpec.abstractBuilder(factoryFunctionName)
+
+        // TODO: allow disable Observable generation
+        funSpec.addParameter(
+            name = "observable",
+            type = Types.Members.nativeViewObservable(viewInfo.functionName)
+        )
+
+        funSpec.returns(Types.Members.swiftUIViewController)
+
+        protocolSpec.addFunction(funSpec.build())
+    }
+
+    return SwiftFileSpec.builder(protocolName)
+        .addType(protocolSpec.build())
+        .build()
 }

@@ -19,80 +19,87 @@ fun buildSwiftIdiomaticFactoryFiles(
 ): List<SwiftFileSpec> {
     return allNativeViews.groupBy { it.factoryName }
         .map { (factoryName, nativeViews) ->
-            val className = "iOS${Types.Members.nativeViewFactory(factoryName)}"
-            val classSpec = SwiftTypeSpec.classBuilder(className)
-                .addModifiers(Modifier.PUBLIC)
-                .addSuperType(Types.Members.composeNativeViewFactory(factoryName).toSwift())
+            buildSwiftIdiomaticFactory(factoryName, nativeViews)
+        }
+}
 
-            for(nativeView in nativeViews) {
-                val factoryFunctionName = Types.factoryFunctionName(nativeView.functionName)
+private fun buildSwiftIdiomaticFactory(
+    factoryName: String,
+    nativeViews: List<NativeViewInfo>,
+): SwiftFileSpec {
+    val className = "iOS${Types.Members.nativeViewFactory(factoryName)}"
+    val classSpec = SwiftTypeSpec.classBuilder(className)
+        .addModifiers(Modifier.PUBLIC)
+        .addSuperType(Types.Members.composeNativeViewFactory(factoryName).toSwift())
 
-                val funSpec = FunctionSpec.builder(factoryFunctionName)
-                    .addModifiers(Modifier.PUBLIC)
+    for(nativeView in nativeViews) {
+        val factoryFunctionName = Types.factoryFunctionName(nativeView.functionName)
 
-                val parametersExcludingModifier = nativeView.parameters.filterNot { it.isModifier }
-                for (param in parametersExcludingModifier) {
-                    val paramSpec = SwiftParameterSpec.builder(
-                        parameterName = param.name,
-                        type = param.swiftType
-                    ).apply {
-                        if(param.swiftType is FunctionTypeName) {
-                            addAttribute("escaping")
-                        }
-                    }
-                    funSpec.addParameter(paramSpec.build())
+        val funSpec = FunctionSpec.builder(factoryFunctionName)
+            .addModifiers(Modifier.PUBLIC)
 
+        val parametersExcludingModifier = nativeView.parameters.filterNot { it.isModifier }
+        for (param in parametersExcludingModifier) {
+            val paramSpec = SwiftParameterSpec.builder(
+                parameterName = param.name,
+                type = param.swiftType
+            ).apply {
+                if(param.swiftType is FunctionTypeName) {
+                    addAttribute("escaping")
                 }
+            }
+            funSpec.addParameter(paramSpec.build())
 
-                funSpec.returns(
-                    Pair::class.asClassName()
-                        .parameterizedBy(
-                            Types.Members.uiViewController,
-                            Types.Members.nativeViewDelegate(nativeView.functionName)
-                        )
-                        .toSwift()!!
+        }
+
+        funSpec.returns(
+            Pair::class.asClassName()
+                .parameterizedBy(
+                    Types.Members.uiViewController,
+                    Types.Members.nativeViewDelegate(nativeView.functionName)
                 )
+                .toSwift()!!
+        )
 
-                val createFunctionName = Types.factoryFunctionName(nativeView.functionName)
-                val rawParamsCode = nativeView.parameters.filterNot { it.isModifier }
-                    .joinToString { "${it.name}: ${it.name}" }
+        val createFunctionName = Types.factoryFunctionName(nativeView.functionName)
+        val rawParamsCode = nativeView.parameters.filterNot { it.isModifier }
+            .joinToString { "${it.name}: ${it.name}" }
 
-                funSpec.addCode("""
+        funSpec.addCode("""
                     let delegate = %T($rawParamsCode)
                     let viewController = nativeViewFactory.$createFunctionName(
                         observable: delegate
                     )
                     return KotlinPair(first: viewController, second: delegate)
                 """.trimIndent(), Types.Members.nativeViewObservable(nativeView.functionName)
-                )
+        )
 
-                classSpec.addFunction(funSpec.build())
-            }
+        classSpec.addFunction(funSpec.build())
+    }
 
-            val initBuilder = FunctionSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-            val viewFactoryProtocolName = Types.Members.nativeViewFactory(factoryName)
-            val viewFactoryParamName = "nativeViewFactory"
-            val viewFactoryType = DeclaredTypeName.typeName(".$viewFactoryProtocolName")
+    val initBuilder = FunctionSpec.constructorBuilder()
+        .addModifiers(Modifier.PUBLIC)
+    val viewFactoryProtocolName = Types.Members.nativeViewFactory(factoryName)
+    val viewFactoryParamName = "nativeViewFactory"
+    val viewFactoryType = DeclaredTypeName.typeName(".$viewFactoryProtocolName")
 
-            classSpec.addProperty(
-                SwiftPropertySpec.builder(viewFactoryParamName, viewFactoryType)
-                    .addModifiers(Modifier.PRIVATE)
-                    .build()
-            )
+    classSpec.addProperty(
+        SwiftPropertySpec.builder(viewFactoryParamName, viewFactoryType)
+            .addModifiers(Modifier.PRIVATE)
+            .build()
+    )
 
-            initBuilder.addParameter(
-                name = viewFactoryParamName,
-                type = viewFactoryType,
-                label = "_"
-            )
-            initBuilder.addCode("self.$viewFactoryParamName = $viewFactoryParamName")
+    initBuilder.addParameter(
+        name = viewFactoryParamName,
+        type = viewFactoryType,
+        label = "_"
+    )
+    initBuilder.addCode("self.$viewFactoryParamName = $viewFactoryParamName")
 
-            classSpec.addFunction(initBuilder.build())
+    classSpec.addFunction(initBuilder.build())
 
-            SwiftFileSpec.builder(className)
-                .addType(classSpec.build())
-                .addImport("UIKit")
-                .build()
-        }
+    return SwiftFileSpec.builder(className)
+        .addType(classSpec.build())
+        .addImport("UIKit")
+        .build()
 }
