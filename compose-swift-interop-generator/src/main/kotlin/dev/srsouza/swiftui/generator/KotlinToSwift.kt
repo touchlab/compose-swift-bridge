@@ -7,13 +7,13 @@ import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.WildcardTypeName
+import dev.srsouza.swiftui.generator.util.SwiftTypeName
 import io.outfoxx.swiftpoet.ARRAY
 import io.outfoxx.swiftpoet.DICTIONARY
 import io.outfoxx.swiftpoet.DeclaredTypeName
 import io.outfoxx.swiftpoet.FunctionTypeName
 import io.outfoxx.swiftpoet.VOID
 import io.outfoxx.swiftpoet.parameterizedBy
-import io.outfoxx.swiftpoet.TypeName as SwiftTypeName
 
 fun TypeName.toSwift(): SwiftTypeName? {
     return when(this) {

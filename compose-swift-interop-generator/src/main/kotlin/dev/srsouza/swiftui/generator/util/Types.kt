@@ -1,14 +1,16 @@
-package dev.srsouza.swiftui.generator
+package dev.srsouza.swiftui.generator.util
 
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
 import io.outfoxx.swiftpoet.DeclaredTypeName
 
-object Helpers {
+object Types {
     val annotationName = "ExpectSwiftView"
     val extensionPackage = "dev.srsouza.compose.swift.interop"
     val extensionDelegatePackage = "$extensionPackage.delegate"
     val extensionAnnotation = "$extensionPackage.$annotationName"
+
+    val modifierFqn = "androidx.compose.ui.Modifier"
 
     fun factoryFunctionName(functionName: String) = "create${functionName}"
 
@@ -34,7 +36,7 @@ object Helpers {
             simpleName = "viewModel"
         )
         val nativeViewHolderViewModel = MemberName(
-            packageName = Helpers.extensionPackage,
+            packageName = extensionPackage,
             simpleName = "NativeViewHolderViewModel"
         )
         val rememberSaveable = MemberName(

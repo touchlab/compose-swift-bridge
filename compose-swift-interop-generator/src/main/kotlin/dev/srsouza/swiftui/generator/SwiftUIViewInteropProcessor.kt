@@ -18,29 +18,34 @@ import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.ksp.writeTo
-import dev.srsouza.swiftui.generator.Helpers.Members.composeNativeViewFactory
-import dev.srsouza.swiftui.generator.Helpers.Members.nativeViewDelegate
-import dev.srsouza.swiftui.generator.Helpers.Members.nativeViewFactory
-import dev.srsouza.swiftui.generator.Helpers.Members.nativeViewObservable
-import dev.srsouza.swiftui.generator.Helpers.Members.observableObject
-import dev.srsouza.swiftui.generator.Helpers.Members.swiftUIViewController
-import dev.srsouza.swiftui.generator.Helpers.Members.uiViewController
-import dev.srsouza.swiftui.generator.Helpers.factoryFunctionName
-import dev.srsouza.swiftui.generator.gen.buildLocalCompositionFile
-import dev.srsouza.swiftui.generator.gen.buildNativeViewOrNull
+import dev.srsouza.swiftui.generator.gen.NativeViewInfo
+import dev.srsouza.swiftui.generator.util.Types.Members.composeNativeViewFactory
+import dev.srsouza.swiftui.generator.util.Types.Members.nativeViewDelegate
+import dev.srsouza.swiftui.generator.util.Types.Members.nativeViewFactory
+import dev.srsouza.swiftui.generator.util.Types.Members.nativeViewObservable
+import dev.srsouza.swiftui.generator.util.Types.Members.observableObject
+import dev.srsouza.swiftui.generator.util.Types.Members.swiftUIViewController
+import dev.srsouza.swiftui.generator.util.Types.Members.uiViewController
+import dev.srsouza.swiftui.generator.util.Types.factoryFunctionName
+import dev.srsouza.swiftui.generator.gen.kotlin.buildLocalCompositionFile
+import dev.srsouza.swiftui.generator.gen.kotlin.buildNativeViewStateDelegateGeneratorFiles
+import dev.srsouza.swiftui.generator.gen.kotlin.buildNativeViewsActualImplementationFiles
+import dev.srsouza.swiftui.generator.gen.kotlin.buildRawFactoryPerPlatformFiles
+import dev.srsouza.swiftui.generator.gen.readNativeViewComposable
+import dev.srsouza.swiftui.generator.gen.swift.buildNativeViewStateSwiftUIObservableObjectFiles
+import dev.srsouza.swiftui.generator.gen.swift.buildSwiftIdiomaticFactoryFiles
+import dev.srsouza.swiftui.generator.gen.swift.buildSwiftViewFactoryProtocolFiles
+import dev.srsouza.swiftui.generator.util.SwiftFileSpec
+import dev.srsouza.swiftui.generator.util.SwiftParameterSpec
+import dev.srsouza.swiftui.generator.util.SwiftPropertySpec
+import dev.srsouza.swiftui.generator.util.SwiftTypeSpec
+import dev.srsouza.swiftui.generator.util.Types
 import io.outfoxx.swiftpoet.DeclaredTypeName
 import io.outfoxx.swiftpoet.FunctionSpec
 import io.outfoxx.swiftpoet.FunctionTypeName
-import io.outfoxx.swiftpoet.ImportSpec
 import io.outfoxx.swiftpoet.Modifier
 import net.pearx.kasechange.CaseFormat
-import net.pearx.kasechange.toCamelCase
 import net.pearx.kasechange.toPascalCase
-import java.io.File
-import io.outfoxx.swiftpoet.FileSpec.Companion as SwiftFileSpec
-import io.outfoxx.swiftpoet.ParameterSpec.Companion as SwiftParameterSpec
-import io.outfoxx.swiftpoet.PropertySpec.Companion as SwiftPropertySpec
-import io.outfoxx.swiftpoet.TypeSpec.Companion as SwiftTypeSpec
 
 data class NativeView(
     val name: String,
@@ -64,26 +69,26 @@ internal class SwiftUIViewInteropProcessor(
     private val target: GeneratorTarget,
 ) : SymbolProcessor {
 
-    private val collectedNativeViews: MutableList<NativeView> = mutableListOf()
+    private val collectedNativeViews: MutableList<NativeViewInfo> = mutableListOf()
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val symbols = resolver.getSymbolsWithAnnotation(Helpers.extensionAnnotation)
+        val symbols = resolver.getSymbolsWithAnnotation(Types.extensionAnnotation)
             .filterIsInstance<KSFunctionDeclaration>()
             .filter { it.validate() }
             .toList()
 
         logger.warn("processing swift")
 
-        val nativeViews = symbols.mapNotNull {
-            buildNativeViewOrNull(logger, it)
+        val viewsInfo = symbols.mapNotNull {
+            readNativeViewComposable(logger, it)
         }
 
-        collectedNativeViews += nativeViews
+        collectedNativeViews += viewsInfo
 
         if(target is GeneratorTarget.IOS) {
             generateNativeViewActuals(
                 symbols = symbols,
-                nativeViews = nativeViews,
+                viewsInfo = viewsInfo,
                 targetName = target.targetName,
             )
         }
@@ -120,24 +125,16 @@ internal class SwiftUIViewInteropProcessor(
 
     private fun generateNativeViewActuals(
         symbols: List<KSFunctionDeclaration>,
-        nativeViews: List<NativeView>,
+        viewsInfo: List<NativeViewInfo>,
         targetName: String,
     ) {
-        val nativeViewFiles = mutableMapOf<String, FileSpec.Builder>()
+        val files = buildNativeViewsActualImplementationFiles(
+            nativeViews = viewsInfo,
+            targetName = targetName,
+        )
 
-        for (nativeView in nativeViews) {
-            val fileSpec = nativeViewFiles.getOrPut(nativeView.file.filePath) {
-                FileSpec.builder(
-                    fileName = "${nativeView.file.fileName.removeSuffix(".kt")}.$targetName",
-                    packageName = nativeView.file.packageName.asString(),
-                )
-            }
-
-            fileSpec.addFunction(nativeView.actualFunSpec)
-        }
-
-        nativeViewFiles.values.forEach { it.build()
-            .writeTo(
+        for (file in files) {
+            file.writeTo(
                 codeGenerator = codeGenerator,
                 aggregating = true,
                 originatingKSFiles = symbols.map { it.containingFile!! }
@@ -146,259 +143,52 @@ internal class SwiftUIViewInteropProcessor(
     }
 
     fun generateNativeViewFactories(target: GeneratorTarget) {
-        for ((factoryName, nativeViews) in collectedNativeViews.groupBy { it.factoryName }) {
+        val files = buildRawFactoryPerPlatformFiles(collectedNativeViews, target)
 
-            val interfaceType = composeNativeViewFactory(factoryName)
-            val interfaceSpec = TypeSpec.interfaceBuilder(interfaceType)
-
-            when(target) {
-                is GeneratorTarget.Common -> {
-                    interfaceSpec.addModifiers(KModifier.EXPECT)
-                }
-                is GeneratorTarget.IOS -> {
-                    interfaceSpec.addModifiers(KModifier.ACTUAL)
-                    for (nativeView in nativeViews) {
-                        val factoryFunctionName = factoryFunctionName(nativeView.name)
-                        val factoryFunctionParameters =
-                            nativeView.parameters.filterNot { it.isModifier }
-
-                        val funSpec = FunSpec.builder(factoryFunctionName)
-                            .addModifiers(KModifier.ABSTRACT)
-
-                        for (param in factoryFunctionParameters) {
-                            funSpec.addParameter(
-                                name = param.name,
-                                type = param.type
-                            )
-                        }
-
-                        funSpec.returns(
-                            Pair::class.asClassName().parameterizedBy(
-                                uiViewController,
-                                nativeViewDelegate(nativeView.name)
-                            )
-                        )
-
-                        interfaceSpec.addFunction(funSpec.build())
-                    }
-                }
-
-                is GeneratorTarget.NonIOS -> {
-                    interfaceSpec.addModifiers(KModifier.ACTUAL)
-                }
-            }
-
-            FileSpec.builder(
-                packageName = interfaceType.packageName,
-                fileName = "${interfaceType.simpleName}${target.suffix}"
+        for(fileSpec in files) {
+            fileSpec.writeTo(
+                codeGenerator = codeGenerator,
+                aggregating = true,
             )
-                .addType(interfaceSpec.build())
-                .build()
-                .writeTo(
-                    codeGenerator = codeGenerator,
-                    aggregating = true,
-                )
         }
     }
 
     fun generateSwiftNativeViewFactories(context: GeneratorTarget.IOS) {
-        for ((factoryName, nativeViews) in collectedNativeViews.groupBy { it.factoryName }) {
+        val fileSpecs = buildSwiftViewFactoryProtocolFiles(collectedNativeViews)
 
-            val protocolName = nativeViewFactory(factoryName)
-            val protocolSpec = SwiftTypeSpec.protocolBuilder(protocolName)
-                .addModifiers(Modifier.PUBLIC)
-
-            for(nativeView in nativeViews) {
-                val factoryFunctionName = factoryFunctionName(nativeView.name)
-
-                val funSpec = FunctionSpec.abstractBuilder(factoryFunctionName)
-
-                funSpec.addParameter(
-                    name = "observable",
-                    type = nativeViewObservable(nativeView.name)
-                )
-
-                funSpec.returns(swiftUIViewController)
-
-                protocolSpec.addFunction(funSpec.build())
-            }
-
-            SwiftFileSpec.builder(protocolName)
-                .addType(protocolSpec.build())
-                .build()
-                .writeTo(context.getSwiftGenerationSourceDir())
-            logger.warn("Writing $protocolName to ${context.getSwiftGenerationSourceDir().path}")
+        for (fileSpec in fileSpecs) {
+            fileSpec.writeTo(context.getSwiftGenerationSourceDir())
+            logger.warn("Writing ${fileSpec.name} to ${context.getSwiftGenerationSourceDir().path}")
         }
     }
 
     fun generateNativeViewDelegates() {
-        for(nativeView in collectedNativeViews) {
-            val typeName = nativeViewDelegate(nativeView.name)
-            val interfaceSpec = TypeSpec.interfaceBuilder(typeName)
-
-            for (param in nativeView.parameters.filterNot { it.isModifier }) {
-                interfaceSpec.addFunction(FunSpec.builder(
-                    "update${param.namePascalCase}"
-                )
-                    .addModifiers(KModifier.ABSTRACT)
-                    .addParameter(ParameterSpec.builder(param.name, param.type).build())
-                    .build())
-            }
-
-            FileSpec.builder(typeName).addType(interfaceSpec.build())
-                .build()
-                .writeTo(
-                    codeGenerator = codeGenerator,
-                    aggregating = true,
-                )
+        val fileSpecs = buildNativeViewStateDelegateGeneratorFiles(collectedNativeViews)
+        for (fileSpec in fileSpecs) {
+            fileSpec.writeTo(
+                codeGenerator = codeGenerator,
+                aggregating = true,
+            )
         }
     }
 
     fun generateSwiftNativeViewObservables(
         context: GeneratorTarget.IOS,
     ) {
-        nativeViews@for (nativeView in collectedNativeViews) {
-            val type = nativeViewObservable(nativeView.name)
-            val classSpec = SwiftTypeSpec.classBuilder(type)
-
-            classSpec.addSuperType(nativeViewDelegate(nativeView.name).toSwift())
-            classSpec.addSuperType(observableObject)
-            classSpec.addModifiers(Modifier.PUBLIC)
-
-            val initBuilder = FunctionSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-            for (param in nativeView.parameters.filterNot { it.isModifier }) {
-                val swiftType = param.type.toSwift()
-
-                if(swiftType == null) {
-                    logger.warn("[SwiftGen] Unable to generate Swift Observable for View ${param.name} because of type ${param.type} unable to Map to Swift Type")
-                    continue@nativeViews
-                }
-
-                classSpec.addProperty(
-                    SwiftPropertySpec.varBuilder(param.name, swiftType)
-                        .addAttribute("Published")
-                        .addModifiers(Modifier.PUBLIC)
-                        .build()
-                )
-
-                val paramSpec = SwiftParameterSpec.builder(
-                    parameterName = param.name,
-                    type = swiftType
-                ).apply {
-                    if(swiftType is FunctionTypeName) {
-                        addAttribute("escaping")
-                    }
-                }
-
-                initBuilder.addParameter(paramSpec.build())
-
-                initBuilder.addCode("self.${param.name} = ${param.name}\n")
-
-                classSpec.addFunction(
-                    FunctionSpec.builder("update${param.namePascalCase}")
-                        .addModifiers(Modifier.PUBLIC)
-                        .addParameter(paramSpec.build())
-                        .addCode("self.${param.name} = ${param.name}\n")
-                        .build()
-                )
-            }
-
-            classSpec.addFunction(initBuilder.build())
-
-            SwiftFileSpec.builder(type.simpleName)
-                .addType(classSpec.build())
-                .build()
-                .writeTo(context.getSwiftGenerationSourceDir())
-            logger.warn("Writing ${type.simpleName} to ${context.getSwiftGenerationSourceDir().path}")
+        val fileSpecs = buildNativeViewStateSwiftUIObservableObjectFiles(collectedNativeViews)
+        for (fileSpec in fileSpecs) {
+            fileSpec.writeTo(context.getSwiftGenerationSourceDir())
+            logger.warn("Writing ${fileSpec.name} to ${context.getSwiftGenerationSourceDir().path}")
         }
     }
 
     fun generateSwiftNativeViewFactoriesBinding(context: GeneratorTarget.IOS) {
-        nativeViews@for ((factoryName, nativeViews) in collectedNativeViews.groupBy { it.factoryName }) {
-
-            val className = "iOS${nativeViewFactory(factoryName)}"
-            val classSpec = SwiftTypeSpec.classBuilder(className)
-                .addModifiers(Modifier.PUBLIC)
-                .addSuperType(composeNativeViewFactory(factoryName).toSwift())
-
-            for(nativeView in nativeViews) {
-                val factoryFunctionName = factoryFunctionName(nativeView.name)
-
-                val funSpec = FunctionSpec.builder(factoryFunctionName)
-                    .addModifiers(Modifier.PUBLIC)
-
-                for (param in nativeView.parameters.filterNot { it.isModifier }) {
-                    val swiftType = param.type.toSwift()
-
-                    if(swiftType == null) {
-                        logger.warn("[SwiftGen] Unable to generate Swift Factory binding for View ${param.name} because of type ${param.type} unable to Map to Swift Type")
-                        continue@nativeViews
-                    }
-
-                    val paramSpec = SwiftParameterSpec.builder(
-                        parameterName = param.name,
-                        type = swiftType
-                    ).apply {
-                        if(swiftType is FunctionTypeName) {
-                            addAttribute("escaping")
-                        }
-                    }
-                    funSpec.addParameter(paramSpec.build())
-
-                }
-
-                funSpec.returns(
-                    Pair::class.asClassName()
-                        .parameterizedBy(uiViewController, nativeViewDelegate(nativeView.name))
-                        .toSwift()!!
-                )
-
-                val createFunctionName = factoryFunctionName(nativeView.name)
-                val rawParamsCode = nativeView.parameters.filterNot { it.isModifier }
-                    .joinToString { "${it.name}: ${it.name}" }
-
-                funSpec.addCode("""
-                    let delegate = %T($rawParamsCode)
-                    let viewController = nativeViewFactory.$createFunctionName(
-                        observable: delegate
-                    )
-                    return KotlinPair(first: viewController, second: delegate)
-                """.trimIndent(), nativeViewObservable(nativeView.name))
-
-                classSpec.addFunction(funSpec.build())
-            }
-
-            val initBuilder = FunctionSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-            val viewFactoryProtocolName = nativeViewFactory(factoryName)
-            val viewFactoryParamName = "nativeViewFactory"
-            val viewFactoryType = DeclaredTypeName.typeName(".$viewFactoryProtocolName")
-
-            classSpec.addProperty(
-                SwiftPropertySpec.builder(viewFactoryParamName, viewFactoryType)
-                    .addModifiers(Modifier.PRIVATE)
-                    .build()
-            )
-
-            initBuilder.addParameter(
-                name = viewFactoryParamName,
-                type = viewFactoryType,
-                label = "_"
-            )
-            initBuilder.addCode("self.$viewFactoryParamName = $viewFactoryParamName")
-
-            classSpec.addFunction(initBuilder.build())
-
-            SwiftFileSpec.builder(className)
-                .addType(classSpec.build())
-                .addImport("UIKit")
-                .build()
-                .writeTo(context.getSwiftGenerationSourceDir())
-            logger.warn("Writing $className to ${context.getSwiftGenerationSourceDir().path}")
+        val files = buildSwiftIdiomaticFactoryFiles(collectedNativeViews)
+        for(fileSpec in files) {
+            fileSpec.writeTo(context.getSwiftGenerationSourceDir())
+            logger.warn("Writing ${fileSpec.name} to ${context.getSwiftGenerationSourceDir().path}")
         }
     }
-
 }
 
 fun KSValueParameter.getKModifiers(): List<KModifier> {
