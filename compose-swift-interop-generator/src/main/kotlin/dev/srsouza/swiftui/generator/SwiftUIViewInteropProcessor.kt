@@ -47,22 +47,6 @@ import io.outfoxx.swiftpoet.Modifier
 import net.pearx.kasechange.CaseFormat
 import net.pearx.kasechange.toPascalCase
 
-data class NativeView(
-    val name: String,
-    val parameters: List<NativeViewParameter>,
-    val factoryName: String,
-    val actualFunSpec: FunSpec,
-    val file: KSFile,
-)
-
-data class NativeViewParameter(
-    val name: String,
-    val type: TypeName,
-    val isModifier: Boolean,
-) {
-    val namePascalCase = name.toPascalCase(CaseFormat.CAMEL)
-}
-
 internal class SwiftUIViewInteropProcessor(
     private val codeGenerator: CodeGenerator,
     private val logger: KSPLogger,
