@@ -8,7 +8,6 @@ import dev.srsouza.swiftui.generator.util.Types.Members.composeNativeViewFactory
 import dev.srsouza.swiftui.generator.util.Types.Members.compositionLocalOf
 import dev.srsouza.swiftui.generator.util.Types.Members.localNativeViewFactory
 import dev.srsouza.swiftui.generator.util.Types.Members.providableCompositionLocal
-import dev.srsouza.swiftui.generator.NativeView
 import dev.srsouza.swiftui.generator.gen.NativeViewInfo
 
 /**

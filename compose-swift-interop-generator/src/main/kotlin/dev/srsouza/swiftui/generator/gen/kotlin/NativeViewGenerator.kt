@@ -24,7 +24,6 @@ import dev.srsouza.swiftui.generator.util.Types.Members.rememberSaveable
 import dev.srsouza.swiftui.generator.util.Types.Members.uiKitViewController
 import dev.srsouza.swiftui.generator.util.Types.Members.viewModelComposable
 import dev.srsouza.swiftui.generator.util.Types.factoryFunctionName
-import dev.srsouza.swiftui.generator.NativeViewParameter
 import dev.srsouza.swiftui.generator.gen.NativeViewInfo
 import dev.srsouza.swiftui.generator.getKModifiers
 import net.pearx.kasechange.CaseFormat
