@@ -10,6 +10,14 @@ import SwiftUI
 import ComposeApp
 import MapKit
 
+struct NativeMapViewBindingSwiftUI : View {
+    @ObservedObject var observable: MapViewWithSwiftUIObservable
+    
+    var body: some View {
+        NativeMapView(title: observable.title, coordinate: observable.coordinate)
+    }
+}
+
 struct NativeMapViewBinding : View {
     @ObservedObject var observable: MapViewObservable
     

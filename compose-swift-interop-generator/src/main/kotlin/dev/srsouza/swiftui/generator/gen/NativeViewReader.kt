@@ -4,6 +4,7 @@ import com.google.devtools.ksp.getVisibility
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSFile
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSValueParameter
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeName
@@ -38,9 +39,15 @@ data class NativeViewInfo(
     val functionName: String,
     val parameters: List<NativeViewParameterInfo>,
     val factoryName: String,
+    val viewType: ViewType,
     val kotlinInfo: KotlinNativeViewInfo,
     // val swiftInfo: SwiftNativeViewInfo
 )
+
+enum class ViewType {
+    SwiftUI,
+    UIViewController,
+}
 
 internal const val DEFAULT_FACTORY_NAME = "NativeView"
 
@@ -63,12 +70,24 @@ fun readNativeViewComposable(
         return null
     }
 
-    val factoryName = function.annotations
+    val expectSwift = function.annotations
         .firstOrNull { it.shortName.getShortName() == Types.annotationName }
+
+    val factoryName = expectSwift
         ?.arguments
         ?.firstOrNull { it.name?.getShortName() == "factoryName" }
         ?.value as? String?
         ?: DEFAULT_FACTORY_NAME // In case KSP can't resolve the default value, we fallback to the default
+
+    val viewType = (expectSwift
+        ?.arguments
+        ?.firstOrNull { it.name?.getShortName() == "type" }
+        ?.value as? KSType?)
+        ?.declaration?.simpleName?.asString()
+        ?.let { enumValueName ->
+            ViewType.entries.find { it.name == enumValueName }
+        }
+        ?: ViewType.SwiftUI // In case KSP can't resolve the default value, we fallback to the default
 
     val functionName = function.simpleName.asString()
 
@@ -111,6 +130,7 @@ fun readNativeViewComposable(
         functionName = functionName,
         parameters = parameters,
         factoryName = factoryName,
+        viewType = viewType,
         kotlinInfo = KotlinNativeViewInfo(
             kspRef = function,
             visibility = visibility,

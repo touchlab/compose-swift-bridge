@@ -3,6 +3,7 @@ package dev.srsouza.swiftui.generator.util
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
 import io.outfoxx.swiftpoet.DeclaredTypeName
+import io.outfoxx.swiftpoet.GenericQualifiedTypeName
 
 object Types {
     val annotationName = "ExpectSwiftView"
@@ -74,5 +75,6 @@ object Types {
         val swiftUIViewController = DeclaredTypeName.typeName("UIKit.UIViewController")
         val observableObject = DeclaredTypeName.typeName("Foundation.ObservableObject")
         val published = DeclaredTypeName.typeName("Foundation.Published")
+        val swiftUIAnyView = DeclaredTypeName.typeName("SwiftUI.AnyView")
     }
 }

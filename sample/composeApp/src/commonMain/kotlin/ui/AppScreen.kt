@@ -1,6 +1,7 @@
 package ui
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.Text
@@ -55,6 +56,15 @@ fun AppScreen() {
         )
 
         MapView(
+            modifier = Modifier.fillMaxWidth()
+                .height(200.dp),
+            coordinate = coordinate,
+            title = title,
+        )
+
+        Spacer(Modifier.height(8.dp))
+
+        MapViewWithSwiftUI(
             modifier = Modifier.fillMaxWidth()
                 .height(200.dp),
             coordinate = coordinate,

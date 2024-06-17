@@ -1,7 +1,7 @@
 package dev.srsouza.swiftui.generator.gen.swift
 
-import dev.srsouza.swiftui.generator.GeneratorTarget
 import dev.srsouza.swiftui.generator.gen.NativeViewInfo
+import dev.srsouza.swiftui.generator.gen.ViewType
 import dev.srsouza.swiftui.generator.util.SwiftFileSpec
 import dev.srsouza.swiftui.generator.util.SwiftTypeSpec
 import dev.srsouza.swiftui.generator.util.Types
@@ -35,6 +35,9 @@ fun buildSwiftViewFactoryProtocolFiles(
  *   func createMapView(observable: MapViewObservable) -> UIViewController
  * }
  * ```
+ *
+ * There are two View Types that is currently supported,
+ * SwiftUI AnyView and UIViewController.
  */
 private fun buildSwiftViewFactoryProtocol(
     factoryName: String,
@@ -55,7 +58,14 @@ private fun buildSwiftViewFactoryProtocol(
             type = Types.Members.nativeViewObservable(viewInfo.functionName)
         )
 
-        funSpec.returns(Types.Members.swiftUIViewController)
+        when(viewInfo.viewType) {
+            ViewType.SwiftUI -> {
+                funSpec.returns(Types.Members.swiftUIAnyView)
+            }
+            ViewType.UIViewController -> {
+                funSpec.returns(Types.Members.swiftUIViewController)
+            }
+        }
 
         protocolSpec.addFunction(funSpec.build())
     }

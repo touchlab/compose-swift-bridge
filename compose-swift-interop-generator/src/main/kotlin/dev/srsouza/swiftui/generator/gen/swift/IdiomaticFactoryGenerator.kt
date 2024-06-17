@@ -3,6 +3,7 @@ package dev.srsouza.swiftui.generator.gen.swift
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.asClassName
 import dev.srsouza.swiftui.generator.gen.NativeViewInfo
+import dev.srsouza.swiftui.generator.gen.ViewType
 import dev.srsouza.swiftui.generator.toSwift
 import dev.srsouza.swiftui.generator.util.SwiftFileSpec
 import dev.srsouza.swiftui.generator.util.SwiftParameterSpec
@@ -45,12 +46,17 @@ fun buildSwiftIdiomaticFactoryFiles(
  *
  *   public func createMapView(coordinate: MapCoordinates, title: String) -> KotlinPair<UIViewController, MapViewDelegate> {
  *     let delegate = MapViewObservable(coordinate: coordinate, title: title)
- *     let viewController = nativeViewFactory.createMapView(
+ *     let ref = nativeViewFactory.createMapView(
  *         observable: delegate
  *     )
- *     return KotlinPair(first: viewController, second: delegate)}
+ *     return KotlinPair(first: ref, second: delegate)}
  * }
  * ```
+ *
+ * There are two View Types that is currently supported,
+ * SwiftUI AnyView and UIViewController. The UIViewController
+ * is supported on Kotlin out of the box, the SwiftUI AnyView
+ * is wrapped in a UIHostingController.
  */
 private fun buildSwiftIdiomaticFactory(
     factoryName: String,
@@ -94,14 +100,34 @@ private fun buildSwiftIdiomaticFactory(
         val rawParamsCode = nativeView.parameters.filterNot { it.isModifier }
             .joinToString { "${it.name}: ${it.name}" }
 
+        // Instantiating ObservableObject
         funSpec.addCode("""
-                    let delegate = %T($rawParamsCode)
-                    let viewController = nativeViewFactory.$createFunctionName(
-                        observable: delegate
-                    )
-                    return KotlinPair(first: viewController, second: delegate)
-                """.trimIndent(), Types.Members.nativeViewObservable(nativeView.functionName)
-        )
+            let delegate = %T($rawParamsCode)
+        """.trimIndent(), Types.Members.nativeViewObservable(nativeView.functionName))
+        funSpec.addCode("\n")
+
+        // Calling the factory function from the protocol implemented
+        funSpec.addCode("""
+            let ref = nativeViewFactory.$createFunctionName(
+                observable: delegate
+            )
+        """.trimIndent())
+        funSpec.addCode("\n")
+
+        when(nativeView.viewType) {
+            ViewType.SwiftUI -> {
+                funSpec.addCode("""
+                    return KotlinPair(first: UIHostingController(rootView: ref), second: delegate)
+                """.trimIndent(),
+                )
+            }
+            ViewType.UIViewController -> {
+                funSpec.addCode("""
+                    return KotlinPair(first: ref, second: delegate)
+                """.trimIndent(),
+                )
+            }
+        }
 
         classSpec.addFunction(funSpec.build())
     }
@@ -130,5 +156,6 @@ private fun buildSwiftIdiomaticFactory(
     return SwiftFileSpec.builder(className)
         .addType(classSpec.build())
         .addImport("UIKit")
+        .addImport("SwiftUI")
         .build()
 }
