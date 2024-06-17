@@ -16,6 +16,21 @@ fun buildNativeViewStateDelegateFiles(
     }
 }
 
+/**
+ * Generate a interface with update functions for a NativeView
+ * containing all parameters from the Composable that
+ * when the state change (aka `remember(parameter)`) is
+ * called.
+ *
+ * Example output
+ * ```kotlin
+ * public interface MapViewDelegate {
+ *   public fun updateCoordinate(coordinate: MapCoordinates)
+ *
+ *   public fun updateTitle(title: String)
+ * }
+ * ```
+ */
 private fun buildNativeViewStateDelegate(viewInfo: NativeViewInfo): FileSpec {
     val typeName = Types.Members.nativeViewDelegate(viewInfo.functionName)
     val interfaceSpec = TypeSpec.interfaceBuilder(typeName)

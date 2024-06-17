@@ -17,6 +17,25 @@ fun buildSwiftViewFactoryProtocolFiles(
         }
 }
 
+/**
+ * Generate a Swift protocol that is idiomatic, abstracting
+ * the complexity by leveraging Swift specific APIs such
+ * being able to depend on a Generate swift type such as the
+ * ObservableObject(@see [buildNativeViewStateSwiftUIObservableObjectFiles])
+ * and SwiftUI that from Kotlin we can't use it.
+ *
+ * This is a sibling of [buildRawFactoryPerPlatformFiles] with
+ * Swift specific features and generated code available. This
+ * is the protocol that will be implemented by the user of the
+ * library on Swift side.
+ *
+ * Example of the code generated:
+ * ```swift
+ * public protocol NativeViewFactory {
+ *   func createMapView(observable: MapViewObservable) -> UIViewController
+ * }
+ * ```
+ */
 private fun buildSwiftViewFactoryProtocol(
     factoryName: String,
     nativeViews: List<NativeViewInfo>,

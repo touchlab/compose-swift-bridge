@@ -23,6 +23,35 @@ fun buildSwiftIdiomaticFactoryFiles(
         }
 }
 
+/**
+ * Generates a Swift files that Glue the generated
+ * swift factory protocol ([buildSwiftViewFactoryProtocolFiles])
+ * with the generated raw factory interface from Kotlin ([buildRawFactoryPerPlatformFiles])
+ * by levering the implementation behind the scenes that allows
+ * the idiomatic format of [buildSwiftViewFactoryProtocolFiles].
+ *
+ * For each override function it consumes the Factory Swift version
+ * and call it implementation and returns to Kotlin the required
+ * Pair with the Delegate State and UIViewController.
+ *
+ * Example of code generated:
+ * ```swift
+ * public class iOSNativeViewFactory : ComposeNativeViewFactory {
+ *
+ *   private let nativeViewFactory: NativeViewFactory
+ *
+ *   public init(_ nativeViewFactory: NativeViewFactory) {
+ *     self.nativeViewFactory = nativeViewFactory}
+ *
+ *   public func createMapView(coordinate: MapCoordinates, title: String) -> KotlinPair<UIViewController, MapViewDelegate> {
+ *     let delegate = MapViewObservable(coordinate: coordinate, title: title)
+ *     let viewController = nativeViewFactory.createMapView(
+ *         observable: delegate
+ *     )
+ *     return KotlinPair(first: viewController, second: delegate)}
+ * }
+ * ```
+ */
 private fun buildSwiftIdiomaticFactory(
     factoryName: String,
     nativeViews: List<NativeViewInfo>,

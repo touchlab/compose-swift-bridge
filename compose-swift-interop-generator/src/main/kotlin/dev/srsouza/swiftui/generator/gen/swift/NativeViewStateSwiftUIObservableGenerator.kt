@@ -20,6 +20,37 @@ fun buildNativeViewStateSwiftUIObservableObjectFiles(
     }
 }
 
+/**
+ * Generates a handy Swift ObservableObject that holds the initial
+ * and current state of a Composable state parameters by
+ * implementing the NativeViewStateDelegate interface
+ * (@see buildNativeViewStateDelegateFiles), this way
+ * SwiftUI can easily subscribe to state changes automatically.
+ *
+ * Example of generated code:
+ * ```swift
+ * public class MapViewObservable : MapViewDelegate, ObservableObject {
+ *
+ *   @Published
+ *   public var coordinate: MapCoordinates
+ *   @Published
+ *   public var title: String
+ *
+ *   public init(coordinate: MapCoordinates, title: String) {
+ *     self.coordinate = coordinate
+ *     self.title = title
+ *   }
+ *
+ *   public func updateCoordinate(coordinate: MapCoordinates) {
+ *     self.coordinate = coordinate
+ *   }
+ *
+ *   public func updateTitle(title: String) {
+ *     self.title = title
+ *   }
+ * }
+ * ```
+ */
 private fun buildNativeViewStateSwiftUIObservableObject(
     viewInfo: NativeViewInfo
 ): SwiftFileSpec {

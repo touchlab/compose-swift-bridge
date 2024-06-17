@@ -26,6 +26,40 @@ fun buildRawFactoryPerPlatformFiles(
     return generatedFiles
 }
 
+/**
+ * Generate the raw Factory interface that contains
+ * all factory functions of the defined Native views
+ * annotated with `@ExpectSwiftView` with the giving
+ * factoryName.
+ *
+ * We call this `raw` because this will have the raw values
+ * that the Kotlin Native can access, for example UIView
+ * and  UIViewController, but we later generate a Swift
+ * protocol that is more idiomatic because it can use
+ * SwiftUI for example, then, we generate a binding class
+ * between the Swift generated Protocol and this interface.
+ * See [buildSwiftIdiomaticFactoryFiles] and [buildSwiftViewFactoryProtocolFiles]
+ *
+ * Because of KSP limitations, not being able to generate
+ * common code for iosMain for example, for allowing
+ * the generated Factory Interface be available at iosMain
+ * we generate a expect interface blank on Common Main,
+ * and actual interface for all targets that is not ios
+ * with blank body. For ios targets, we generate the actual
+ * Factory interface with all factory functions.
+ *
+ * Because the factory functions is only used by the
+ * actual expect view composable generated code for
+ * the ios targets, there is no problem on this approach.
+ *
+ * Example code generated for ios target:
+ * ```kotlin
+ * public actual interface ComposeNativeViewFactory {
+ *   public fun createMapView(coordinate: MapCoordinates, title: String):
+ *       Pair<UIViewController, MapViewDelegate>
+ * }
+ * ```
+ */
 private fun buildRawFactoryPerPlatform(
     factoryName: String,
     nativeViews: List<NativeViewInfo>,
