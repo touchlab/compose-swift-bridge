@@ -11,6 +11,7 @@ import com.google.devtools.ksp.validate
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ksp.writeTo
 import dev.srsouza.swiftui.generator.gen.NativeViewInfo
+import dev.srsouza.swiftui.generator.gen.ViewType
 import dev.srsouza.swiftui.generator.gen.kotlin.buildLocalCompositionFile
 import dev.srsouza.swiftui.generator.gen.kotlin.buildNativeViewStateDelegateFiles
 import dev.srsouza.swiftui.generator.gen.kotlin.buildNativeViewsActualImplementationFiles
@@ -133,7 +134,17 @@ internal class SwiftUIViewInteropProcessor(
     fun generateSwiftNativeViewObservables(
         context: GeneratorTarget.IOS,
     ) {
-        val fileSpecs = buildNativeViewStateSwiftUIObservableObjectFiles(collectedNativeViews)
+        val swiftUiCollectedNativeViews = collectedNativeViews.filter {
+            // Generate only for SwiftUI type
+            when (it.viewType) {
+                ViewType.SwiftUI -> true
+
+                ViewType.UIViewController,
+                ViewType.UIView -> false
+            }
+        }
+
+        val fileSpecs = buildNativeViewStateSwiftUIObservableObjectFiles(swiftUiCollectedNativeViews)
         for (fileSpec in fileSpecs) {
             fileSpec.writeTo(context.getSwiftGenerationSourceDir())
             logger.warn("Writing ${fileSpec.name} to ${context.getSwiftGenerationSourceDir().path}")

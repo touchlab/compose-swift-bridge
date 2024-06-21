@@ -14,8 +14,16 @@ commonMain:
 @Composable
 expect fun MapView(
     modifier: Modifier = Modifier,
-    coordinate: MapCoordinates,
     title: String,
+    coordinate: MapCoordinates,
+)
+
+@ExpectSwiftView(type = ViewType.UIView)
+@Composable
+expect fun MapViewExampleUiKit(
+    modifier: Modifier = Modifier,
+    title: String,
+    coordinate: MapCoordinates,
 )
 ```
 
@@ -41,11 +49,19 @@ when Compose recompose with a new state, only that parameter will be updated on 
 
 ```swift
 class SwiftUINativeViewFactory : NativeViewFactory {
-    func createMapView(observable: MapViewObservable) -> UIViewController {
+    // SwiftUI type example (default annotation configuration)
+    func createMapView(observable: MapViewObservable) -> AnyView {
         let view = NativeMapViewBinding(observable: observable)
-        return UIHostingController(rootView: view)
+        return AnyView(view)
     }
-}
+    
+    // UIKit View type example
+    // In this example, the Custom UIView implements MapViewExampleUiKitDelegate
+    // to consume state updates, so it conforms to MapViewExampleUiKitDelegate.
+    func createMapViewExampleUiKit(title: String, coordinate: MapCoordinates) -> (view: UIView, delegate: MapViewExampleUiKitDelegate) {
+        let view = NativeMapUIKitView(title: title, coordinate: coordinate)
+        return (view: view, delegate: view)
+    }
 ```
 
 We update MainViewController call passing the `iOSNativeViewFactory(SwiftUINativeViewFactory())`

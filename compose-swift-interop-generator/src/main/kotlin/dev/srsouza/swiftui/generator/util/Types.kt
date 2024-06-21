@@ -56,6 +56,10 @@ object Types {
             packageName = "androidx.compose.ui.interop",
             simpleName = "UIKitViewController"
         )
+        val uiKitView = MemberName(
+            packageName = "androidx.compose.ui.interop",
+            simpleName = "UIKitView"
+        )
         val random = MemberName(
             packageName = "kotlin.random",
             simpleName = "Random"
@@ -72,7 +76,12 @@ object Types {
             packageName = "platform.UIKit",
             "UIViewController"
         )
+        val uiView = ClassName(
+            packageName = "platform.UIKit",
+            "UIView"
+        )
         val swiftUIViewController = DeclaredTypeName.typeName("UIKit.UIViewController")
+        val swiftUIView = DeclaredTypeName.typeName("UIKit.UIView")
         val observableObject = DeclaredTypeName.typeName("Foundation.ObservableObject")
         val published = DeclaredTypeName.typeName("Foundation.Published")
         val swiftUIAnyView = DeclaredTypeName.typeName("SwiftUI.AnyView")

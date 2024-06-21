@@ -70,5 +70,14 @@ fun AppScreen() {
             coordinate = coordinate,
             title = title,
         )
+
+        Spacer(Modifier.height(8.dp))
+
+        MapViewWithUiView(
+            modifier = Modifier.fillMaxWidth()
+                .height(200.dp),
+            coordinate = coordinate,
+            title = title,
+        )
     }
 }

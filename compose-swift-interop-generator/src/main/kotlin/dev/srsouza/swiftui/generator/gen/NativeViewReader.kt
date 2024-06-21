@@ -47,6 +47,7 @@ data class NativeViewInfo(
 enum class ViewType {
     SwiftUI,
     UIViewController,
+    UIView,
 }
 
 internal const val DEFAULT_FACTORY_NAME = "NativeView"

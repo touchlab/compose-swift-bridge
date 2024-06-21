@@ -8,7 +8,10 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
 import dev.srsouza.swiftui.generator.GeneratorTarget
 import dev.srsouza.swiftui.generator.gen.NativeViewInfo
+import dev.srsouza.swiftui.generator.gen.ViewType
 import dev.srsouza.swiftui.generator.util.Types
+import dev.srsouza.swiftui.generator.util.Types.Members.uiKitView
+import dev.srsouza.swiftui.generator.util.Types.Members.uiKitViewController
 
 fun buildRawFactoryPerPlatformFiles(
     allNativeViews: List<NativeViewInfo>,
@@ -91,9 +94,15 @@ private fun buildRawFactoryPerPlatform(
                     )
                 }
 
+                val interopTypeBasedOnViewType = when(viewInfo.viewType) {
+                    ViewType.SwiftUI,
+                    ViewType.UIViewController -> Types.Members.uiViewController
+                    ViewType.UIView -> Types.Members.uiView
+                }
+
                 funSpec.returns(
                     Pair::class.asClassName().parameterizedBy(
-                        Types.Members.uiViewController,
+                        interopTypeBasedOnViewType,
                         Types.Members.nativeViewDelegate(viewInfo.functionName)
                     )
                 )

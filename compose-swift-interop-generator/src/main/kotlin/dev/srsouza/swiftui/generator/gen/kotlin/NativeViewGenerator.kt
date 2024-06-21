@@ -1,21 +1,12 @@
 package dev.srsouza.swiftui.generator.gen.kotlin
 
-import com.google.devtools.ksp.getVisibility
-import com.google.devtools.ksp.processing.KSPLogger
-import com.google.devtools.ksp.symbol.KSFile
-import com.google.devtools.ksp.symbol.KSFunctionDeclaration
-import com.google.devtools.ksp.symbol.KSValueParameter
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
-import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.ksp.toAnnotationSpec
-import com.squareup.kotlinpoet.ksp.toKModifier
-import com.squareup.kotlinpoet.ksp.toTypeName
-import dev.srsouza.swiftui.generator.util.Types
 import dev.srsouza.swiftui.generator.util.Types.Members.localNativeViewFactory
 import dev.srsouza.swiftui.generator.util.Types.Members.nativeViewHolderViewModel
 import dev.srsouza.swiftui.generator.util.Types.Members.random
@@ -25,10 +16,11 @@ import dev.srsouza.swiftui.generator.util.Types.Members.uiKitViewController
 import dev.srsouza.swiftui.generator.util.Types.Members.viewModelComposable
 import dev.srsouza.swiftui.generator.util.Types.factoryFunctionName
 import dev.srsouza.swiftui.generator.gen.NativeViewInfo
+import dev.srsouza.swiftui.generator.gen.ViewType
 import dev.srsouza.swiftui.generator.getKModifiers
+import dev.srsouza.swiftui.generator.util.Types.Members.uiKitView
 import net.pearx.kasechange.CaseFormat
 import net.pearx.kasechange.toPascalCase
-
 
 /**
  * Creates all the File specs for all Native View annotated with
@@ -173,14 +165,20 @@ fun buildNativeViewActual(
         funSpec.addCode("%M(${parameter.name}) { delegate.update$namePascalCase(${parameter.name}) }", remember)
     }
 
+    val interopComposableBasedOnViewType = when(viewInfo.viewType) {
+        ViewType.SwiftUI,
+        ViewType.UIViewController -> uiKitViewController
+        ViewType.UIView -> uiKitView
+    }
+
     funSpec.addCode("\n")
     funSpec.addCode("""
         %M(
             modifier = ${viewInfo.kotlinInfo.modifierParamName},
-            factory = { viewModel.viewController },
+            factory = { viewModel.view },
             update = { },
         )
-    """.trimIndent(), uiKitViewController)
+    """.trimIndent(), interopComposableBasedOnViewType)
 
     return funSpec.build()
 }

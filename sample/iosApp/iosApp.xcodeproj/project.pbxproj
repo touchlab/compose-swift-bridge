@@ -10,6 +10,7 @@
 		058557BB273AAA24004C7B11 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557BA273AAA24004C7B11 /* Assets.xcassets */; };
 		058557D9273AAEEB004C7B11 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 058557D8273AAEEB004C7B11 /* Preview Assets.xcassets */; };
 		2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2152FB032600AC8F00CF470E /* iOSApp.swift */; };
+		D18A18272C260978001B31AF /* NativeMapUIKitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D18A18262C260978001B31AF /* NativeMapUIKitView.swift */; };
 		D1DA94C52BE16DAA004C3F7E /* NativeViewFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1DA94C42BE16DAA004C3F7E /* NativeViewFactory.swift */; };
 		D1DA94C72BE16DD2004C3F7E /* NativeMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1DA94C62BE16DD2004C3F7E /* NativeMapView.swift */; };
 /* End PBXBuildFile section */
@@ -21,6 +22,7 @@
 		7555FF7B242A565900829871 /* Compose Interop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Compose Interop.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7555FF8C242A565B00829871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AB3632DC29227652001CCB65 /* Config.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		D18A18262C260978001B31AF /* NativeMapUIKitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeMapUIKitView.swift; sourceTree = "<group>"; };
 		D1DA94C42BE16DAA004C3F7E /* NativeViewFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeViewFactory.swift; sourceTree = "<group>"; };
 		D1DA94C62BE16DD2004C3F7E /* NativeMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativeMapView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -78,6 +80,7 @@
 				058557D7273AAEEB004C7B11 /* Preview Content */,
 				D1DA94C42BE16DAA004C3F7E /* NativeViewFactory.swift */,
 				D1DA94C62BE16DD2004C3F7E /* NativeMapView.swift */,
+				D18A18262C260978001B31AF /* NativeMapUIKitView.swift */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -187,6 +190,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D1DA94C72BE16DD2004C3F7E /* NativeMapView.swift in Sources */,
+				D18A18272C260978001B31AF /* NativeMapUIKitView.swift in Sources */,
 				D1DA94C52BE16DAA004C3F7E /* NativeViewFactory.swift in Sources */,
 				2152FB042600AC8F00CF470E /* iOSApp.swift in Sources */,
 			);

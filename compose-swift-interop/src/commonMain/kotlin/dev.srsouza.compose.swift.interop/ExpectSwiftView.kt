@@ -8,4 +8,5 @@ annotation class ExpectSwiftView(
 enum class ViewType {
     SwiftUI,
     UIViewController,
+    UIView,
 }

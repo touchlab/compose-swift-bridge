@@ -25,3 +25,13 @@ expect fun MapViewWithSwiftUI(
     coordinate: MapCoordinates,
     title: String,
 )
+
+@ExpectSwiftView(
+    type = ViewType.UIView
+)
+@Composable
+expect fun MapViewWithUiView(
+    modifier: Modifier = Modifier,
+    coordinate: MapCoordinates,
+    title: String,
+)

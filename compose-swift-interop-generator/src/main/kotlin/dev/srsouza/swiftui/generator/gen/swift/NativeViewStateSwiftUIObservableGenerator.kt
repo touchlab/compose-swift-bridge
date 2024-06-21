@@ -1,6 +1,5 @@
 package dev.srsouza.swiftui.generator.gen.swift
 
-import com.squareup.kotlinpoet.FileSpec
 import dev.srsouza.swiftui.generator.gen.NativeViewInfo
 import dev.srsouza.swiftui.generator.toSwift
 import dev.srsouza.swiftui.generator.util.SwiftFileSpec
@@ -21,7 +20,7 @@ fun buildNativeViewStateSwiftUIObservableObjectFiles(
 }
 
 /**
- * Generates a handy Swift ObservableObject that holds the initial
+ * Generates a handy SwiftUI ObservableObject that holds the initial
  * and current state of a Composable state parameters by
  * implementing the NativeViewStateDelegate interface
  * (@see buildNativeViewStateDelegateFiles), this way

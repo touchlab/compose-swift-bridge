@@ -53,10 +53,17 @@ fun buildSwiftIdiomaticFactoryFiles(
  * }
  * ```
  *
- * There are two View Types that is currently supported,
- * SwiftUI AnyView and UIViewController. The UIViewController
- * is supported on Kotlin out of the box, the SwiftUI AnyView
- * is wrapped in a UIHostingController.
+ * There are 3 View Types that is currently supported,
+ * SwiftUI AnyView, UIViewController and UIView.
+ *
+ * SwiftUI View: Is wrap in a UIHostingController and we instantiate
+ * the generated ObservableObject that implements the State Delegate Updater
+ * allowing SwiftUI to consume states from Compose automatically.
+ *
+ * UIViewController and UIView: They both depend on the user to implement
+ * by hand the State Delegate Updater interfaces, this can be implemented
+ * in anyway that the user wants, for example by implementing directly on
+ * the UIViewController or the UIView.
  */
 private fun buildSwiftIdiomaticFactory(
     factoryName: String,
@@ -73,24 +80,21 @@ private fun buildSwiftIdiomaticFactory(
         val funSpec = FunctionSpec.builder(factoryFunctionName)
             .addModifiers(Modifier.PUBLIC)
 
-        val parametersExcludingModifier = nativeView.parameters.filterNot { it.isModifier }
-        for (param in parametersExcludingModifier) {
-            val paramSpec = SwiftParameterSpec.builder(
-                parameterName = param.name,
-                type = param.swiftType
-            ).apply {
-                if(param.swiftType is FunctionTypeName) {
-                    addAttribute("escaping")
-                }
-            }
-            funSpec.addParameter(paramSpec.build())
+        // Adding the swift mapped parameters to the function
+        nativeView.swiftParametersMapping()
+            .forEach(funSpec::addParameter)
 
+        // Defining the return type
+        val interopTypeBasedOnViewType = when(nativeView.viewType) {
+            ViewType.SwiftUI,
+            ViewType.UIViewController -> Types.Members.uiViewController
+            ViewType.UIView -> Types.Members.uiView
         }
 
         funSpec.returns(
             Pair::class.asClassName()
                 .parameterizedBy(
-                    Types.Members.uiViewController,
+                    interopTypeBasedOnViewType,
                     Types.Members.nativeViewDelegate(nativeView.functionName)
                 )
                 .toSwift()!!
@@ -100,28 +104,38 @@ private fun buildSwiftIdiomaticFactory(
         val rawParamsCode = nativeView.parameters.filterNot { it.isModifier }
             .joinToString { "${it.name}: ${it.name}" }
 
-        // Instantiating ObservableObject
-        funSpec.addCode("""
-            let delegate = %T($rawParamsCode)
-        """.trimIndent(), Types.Members.nativeViewObservable(nativeView.functionName))
-        funSpec.addCode("\n")
-
-        // Calling the factory function from the protocol implemented
-        funSpec.addCode("""
-            let ref = nativeViewFactory.$createFunctionName(
-                observable: delegate
-            )
-        """.trimIndent())
-        funSpec.addCode("\n")
-
         when(nativeView.viewType) {
             ViewType.SwiftUI -> {
+                // Instantiating ObservableObject
+                funSpec.addCode("""
+                    let delegate = %T($rawParamsCode)
+                """.trimIndent(), Types.Members.nativeViewObservable(nativeView.functionName))
+                funSpec.addCode("\n")
+
+                // Calling the factory function from the protocol implemented
+                funSpec.addCode("""
+                    let ref = nativeViewFactory.$createFunctionName(
+                        observable: delegate
+                    )
+                """.trimIndent())
+                funSpec.addCode("\n")
+
+                // returning
                 funSpec.addCode("""
                     return KotlinPair(first: UIHostingController(rootView: ref), second: delegate)
                 """.trimIndent(),
                 )
             }
-            ViewType.UIViewController -> {
+            ViewType.UIViewController,
+            ViewType.UIView -> {
+                // Calling the factory function from the protocol implemented
+                funSpec.addCode("""
+                    let (ref, delegate) = nativeViewFactory.$createFunctionName(
+                        $rawParamsCode
+                    )
+                """.trimIndent())
+                funSpec.addCode("\n")
+
                 funSpec.addCode("""
                     return KotlinPair(first: ref, second: delegate)
                 """.trimIndent(),
@@ -158,4 +172,19 @@ private fun buildSwiftIdiomaticFactory(
         .addImport("UIKit")
         .addImport("SwiftUI")
         .build()
+}
+
+internal fun NativeViewInfo.swiftParametersMapping(): List<SwiftParameterSpec> {
+    return parameters.filterNot { it.isModifier }
+        .map { param ->
+            val paramSpec = SwiftParameterSpec.builder(
+                parameterName = param.name,
+                type = param.swiftType
+            ).apply {
+                if(param.swiftType is FunctionTypeName) {
+                    addAttribute("escaping")
+                }
+            }
+            paramSpec.build()
+        }
 }

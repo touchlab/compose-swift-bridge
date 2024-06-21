@@ -10,6 +10,27 @@ import SwiftUI
 import ComposeApp
 import MapKit
 
+public class MapViewObservable : MapViewDelegate, ObservableObject {
+
+  @Published
+  public var coordinate: MapCoordinates
+  @Published
+  public var title: String
+
+  public init(coordinate: MapCoordinates, title: String) {
+    self.coordinate = coordinate
+    self.title = title
+  }
+
+  public func updateCoordinate(coordinate: MapCoordinates) {
+    self.coordinate = coordinate
+  }
+
+  public func updateTitle(title: String) {
+    self.title = title
+  }
+}
+
 struct NativeMapViewBindingSwiftUI : View {
     @ObservedObject var observable: MapViewWithSwiftUIObservable
     
