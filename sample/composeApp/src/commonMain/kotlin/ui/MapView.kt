@@ -7,7 +7,8 @@ import dev.srsouza.compose.swift.interop.ExpectSwiftView
 import dev.srsouza.compose.swift.interop.ViewType
 
 @ExpectSwiftView(
-    type = ViewType.UIViewController
+    type = ViewType.UIViewController,
+    keepStateCrossNavigation = true,
 )
 @Composable
 expect fun MapView(

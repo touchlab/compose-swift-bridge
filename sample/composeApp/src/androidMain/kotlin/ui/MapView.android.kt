@@ -58,3 +58,12 @@ actual fun MapViewWithSwiftUI(
 ) {
     MapView(modifier, coordinate, title)
 }
+
+@Composable
+actual fun MapViewWithUiView(
+    modifier: Modifier,
+    coordinate: MapCoordinates,
+    title: String
+) {
+    MapView(modifier, coordinate, title)
+}

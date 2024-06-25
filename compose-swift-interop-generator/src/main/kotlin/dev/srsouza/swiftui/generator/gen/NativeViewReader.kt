@@ -40,6 +40,7 @@ data class NativeViewInfo(
     val parameters: List<NativeViewParameterInfo>,
     val factoryName: String,
     val viewType: ViewType,
+    val keepStateCrossNavigation: Boolean,
     val kotlinInfo: KotlinNativeViewInfo,
     // val swiftInfo: SwiftNativeViewInfo
 )
@@ -51,6 +52,8 @@ enum class ViewType {
 }
 
 internal const val DEFAULT_FACTORY_NAME = "NativeView"
+internal const val DEFAULT_KEEP_STATE_CROSS_NAVIGATION = false
+internal val DEFAULT_VIEW_TYPE = ViewType.SwiftUI
 
 fun readNativeViewComposable(
     logger: KSPLogger,
@@ -88,7 +91,13 @@ fun readNativeViewComposable(
         ?.let { enumValueName ->
             ViewType.entries.find { it.name == enumValueName }
         }
-        ?: ViewType.SwiftUI // In case KSP can't resolve the default value, we fallback to the default
+        ?: DEFAULT_VIEW_TYPE // In case KSP can't resolve the default value, we fallback to the default
+
+    val keepStateCrossNavigation = expectSwift
+        ?.arguments
+        ?.firstOrNull { it.name?.getShortName() == "keepStateCrossNavigation" }
+        ?.value as? Boolean?
+        ?: DEFAULT_KEEP_STATE_CROSS_NAVIGATION // In case KSP can't resolve the default value, we fallback to the default
 
     val functionName = function.simpleName.asString()
 
@@ -132,6 +141,7 @@ fun readNativeViewComposable(
         parameters = parameters,
         factoryName = factoryName,
         viewType = viewType,
+        keepStateCrossNavigation = keepStateCrossNavigation,
         kotlinInfo = KotlinNativeViewInfo(
             kspRef = function,
             visibility = visibility,

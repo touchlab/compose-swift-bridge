@@ -136,10 +136,17 @@ fun buildNativeViewActual(
     val factoryFunctionParameters = viewInfo.parameters.filterNot { it.isModifier }
         .joinToString { it.name }
 
-    funSpec.addCode(
-        """
-            val factory = %M.current
-            
+    funSpec.addCode("""
+        val factory = %M.current
+    """.trimIndent(),
+        localNativeViewFactory(viewInfo.factoryName)
+    )
+    funSpec.addCode("\n")
+
+    if (viewInfo.keepStateCrossNavigation) {
+        // we move the factory reference to the ViewModel
+        funSpec.addCode(
+            """
             val key = %M { %M.nextInt().toString(16) }
 
             val viewModel = %M(key = key) {
@@ -148,14 +155,31 @@ fun buildNativeViewActual(
                 )
             }
             val delegate = %M(viewModel) { viewModel.delegate }
+            val view = %M(viewModel) { viewModel.view }
         """.trimIndent(),
-        localNativeViewFactory(viewInfo.factoryName),
-        rememberSaveable,
-        random,
-        viewModelComposable,
-        nativeViewHolderViewModel,
-        remember
-    )
+            rememberSaveable,
+            random,
+            viewModelComposable,
+            nativeViewHolderViewModel,
+            remember,
+            remember,
+        )
+    } else {
+        funSpec.addCode(
+            """
+            val viewFactory = %M {
+                factory.$factoryFunctionName($factoryFunctionParameters)
+            }
+            val delegate = %M(viewFactory) { viewFactory.second }
+            val view = %M(viewFactory) { viewFactory.first }
+        """.trimIndent(),
+            remember,
+            remember,
+            remember,
+        )
+    }
+
+    funSpec.addCode("\n")
 
     for (parameter in viewInfo.parameters) {
         if(parameter.isModifier) continue // ignore Modifier parameters
@@ -175,7 +199,7 @@ fun buildNativeViewActual(
     funSpec.addCode("""
         %M(
             modifier = ${viewInfo.kotlinInfo.modifierParamName},
-            factory = { viewModel.view },
+            factory = { view },
             update = { },
         )
     """.trimIndent(), interopComposableBasedOnViewType)
