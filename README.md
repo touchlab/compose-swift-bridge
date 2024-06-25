@@ -98,16 +98,31 @@ dependencies {
     "kspIosX64"(projects.composeSwiftInteropGenerator) // TODO: Change here
 }
 
-tasks.withType<KspTaskNative> {
-    val skieCompilationAbsolutePath = layout.buildDirectory.file("skie/compilation/").get().asFile.absolutePath
-    outputs.dir(skieCompilationAbsolutePath) // forces KSP task cache to sync with SKIE output folder
+tasks.withType<KspTaskNative>().configureEach {
+    val outputDirectory = layout.buildDirectory.dir("ksp/$target/swift")
 
-    options.add(SubpluginOption("apoption", "swiftInterop.targetName=${this.target}"))
+    outputs.dir(outputDirectory)
+
+    options.add(SubpluginOption("apoption", "swiftInterop.targetName=$target"))
     options.add(
-        SubpluginOption(
-            "apoption",
-            "swiftInterop.swiftOutputPath=${skieCompilationAbsolutePath}"
-        )
+        provider {
+            SubpluginOption(
+                "apoption",
+                "swiftInterop.swiftOutputPath=${outputDirectory.get().asFile.absolutePath}"
+            )
+        }
+    )
+}
+
+tasks.withType<ProcessSwiftSourcesTask>().configureEach {
+    val targetSuffix = name.substringAfter("skieProcessSwiftSources")
+
+    val kspTask = tasks.matching { it is KspTaskNative && it.name.substringAfter("kspKotlin") == targetSuffix }
+
+    inputs.files(
+        provider {
+            kspTask.map { it.outputs }
+        }
     )
 }
 
