@@ -1,4 +1,4 @@
-package dev.srsouza.swiftui.generator
+package co.touchlab.compose.expect.swift.generator.ksp
 
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.Dynamic
@@ -7,9 +7,8 @@ import com.squareup.kotlinpoet.ParameterizedTypeName
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.WildcardTypeName
-import dev.srsouza.swiftui.generator.util.SwiftTypeName
+import co.touchlab.compose.expect.swift.generator.ksp.util.SwiftTypeName
 import io.outfoxx.swiftpoet.ARRAY
-import io.outfoxx.swiftpoet.DICTIONARY
 import io.outfoxx.swiftpoet.DeclaredTypeName
 import io.outfoxx.swiftpoet.FunctionTypeName
 import io.outfoxx.swiftpoet.VOID

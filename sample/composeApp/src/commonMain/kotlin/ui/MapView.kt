@@ -3,8 +3,8 @@ package ui
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import data.MapCoordinates
-import dev.srsouza.compose.swift.interop.ExpectSwiftView
-import dev.srsouza.compose.swift.interop.ViewType
+import co.touchlab.compose.expect.swift.ExpectSwiftView
+import co.touchlab.compose.expect.swift.ViewType
 
 @ExpectSwiftView(
     type = ViewType.UIViewController,

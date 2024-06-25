@@ -1,18 +1,17 @@
-package dev.srsouza.swiftui.generator.gen.swift
+package co.touchlab.compose.expect.swift.generator.ksp.gen.swift
 
-import dev.srsouza.swiftui.generator.gen.NativeViewInfo
-import dev.srsouza.swiftui.generator.gen.ViewType
-import dev.srsouza.swiftui.generator.toSwift
-import dev.srsouza.swiftui.generator.util.SwiftFileSpec
-import dev.srsouza.swiftui.generator.util.SwiftTypeName
-import dev.srsouza.swiftui.generator.util.SwiftTypeSpec
-import dev.srsouza.swiftui.generator.util.Types
+import co.touchlab.compose.expect.swift.generator.ksp.gen.NativeViewInfo
+import co.touchlab.compose.expect.swift.generator.ksp.gen.ViewType
+import co.touchlab.compose.expect.swift.generator.ksp.toSwift
+import co.touchlab.compose.expect.swift.generator.ksp.util.SwiftFileSpec
+import co.touchlab.compose.expect.swift.generator.ksp.util.SwiftTypeName
+import co.touchlab.compose.expect.swift.generator.ksp.util.SwiftTypeSpec
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types
 import io.outfoxx.swiftpoet.DeclaredTypeName
 import io.outfoxx.swiftpoet.FunctionSpec
 import io.outfoxx.swiftpoet.Modifier
 import io.outfoxx.swiftpoet.ParameterSpec
 import io.outfoxx.swiftpoet.TupleTypeName
-import io.outfoxx.swiftpoet.TypeName
 
 fun buildSwiftViewFactoryProtocolFiles(
     allNativeViews: List<NativeViewInfo>

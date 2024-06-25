@@ -1,4 +1,4 @@
-package dev.srsouza.compose.swift.interop
+package co.touchlab.compose.expect.swift
 
 /**
  * Annotation that marks a Expected Composable function for generating

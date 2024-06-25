@@ -1,4 +1,4 @@
-package dev.srsouza.swiftui.generator.gen.kotlin
+package co.touchlab.compose.expect.swift.generator.ksp.gen.kotlin
 
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -6,12 +6,10 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
-import dev.srsouza.swiftui.generator.GeneratorTarget
-import dev.srsouza.swiftui.generator.gen.NativeViewInfo
-import dev.srsouza.swiftui.generator.gen.ViewType
-import dev.srsouza.swiftui.generator.util.Types
-import dev.srsouza.swiftui.generator.util.Types.Members.uiKitView
-import dev.srsouza.swiftui.generator.util.Types.Members.uiKitViewController
+import co.touchlab.compose.expect.swift.generator.ksp.GeneratorTarget
+import co.touchlab.compose.expect.swift.generator.ksp.gen.NativeViewInfo
+import co.touchlab.compose.expect.swift.generator.ksp.gen.ViewType
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types
 
 fun buildRawFactoryPerPlatformFiles(
     allNativeViews: List<NativeViewInfo>,

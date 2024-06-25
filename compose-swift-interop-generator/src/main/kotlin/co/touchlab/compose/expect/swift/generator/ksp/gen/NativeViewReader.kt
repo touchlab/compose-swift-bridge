@@ -1,4 +1,4 @@
-package dev.srsouza.swiftui.generator.gen
+package co.touchlab.compose.expect.swift.generator.ksp.gen
 
 import com.google.devtools.ksp.getVisibility
 import com.google.devtools.ksp.processing.KSPLogger
@@ -10,9 +10,9 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.ksp.toKModifier
 import com.squareup.kotlinpoet.ksp.toTypeName
-import dev.srsouza.swiftui.generator.toSwift
-import dev.srsouza.swiftui.generator.util.SwiftTypeName
-import dev.srsouza.swiftui.generator.util.Types
+import co.touchlab.compose.expect.swift.generator.ksp.toSwift
+import co.touchlab.compose.expect.swift.generator.ksp.util.SwiftTypeName
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types
 import net.pearx.kasechange.CaseFormat
 import net.pearx.kasechange.toPascalCase
 

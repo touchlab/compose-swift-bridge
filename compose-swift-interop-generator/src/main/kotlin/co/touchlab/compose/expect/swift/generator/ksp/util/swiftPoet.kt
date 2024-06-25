@@ -1,4 +1,4 @@
-package dev.srsouza.swiftui.generator.util
+package co.touchlab.compose.expect.swift.generator.ksp.util
 
 typealias SwiftTypeName = io.outfoxx.swiftpoet.TypeName
 typealias SwiftFileSpec = io.outfoxx.swiftpoet.FileSpec

@@ -1,4 +1,4 @@
-package dev.srsouza.swiftui.generator.gen.kotlin
+package co.touchlab.compose.expect.swift.generator.ksp.gen.kotlin
 
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
@@ -7,18 +7,18 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ksp.toAnnotationSpec
-import dev.srsouza.swiftui.generator.util.Types.Members.localNativeViewFactory
-import dev.srsouza.swiftui.generator.util.Types.Members.nativeViewHolderViewModel
-import dev.srsouza.swiftui.generator.util.Types.Members.random
-import dev.srsouza.swiftui.generator.util.Types.Members.remember
-import dev.srsouza.swiftui.generator.util.Types.Members.rememberSaveable
-import dev.srsouza.swiftui.generator.util.Types.Members.uiKitViewController
-import dev.srsouza.swiftui.generator.util.Types.Members.viewModelComposable
-import dev.srsouza.swiftui.generator.util.Types.factoryFunctionName
-import dev.srsouza.swiftui.generator.gen.NativeViewInfo
-import dev.srsouza.swiftui.generator.gen.ViewType
-import dev.srsouza.swiftui.generator.getKModifiers
-import dev.srsouza.swiftui.generator.util.Types.Members.uiKitView
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.localNativeViewFactory
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.nativeViewHolderViewModel
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.random
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.remember
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.rememberSaveable
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.uiKitViewController
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.viewModelComposable
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types.factoryFunctionName
+import co.touchlab.compose.expect.swift.generator.ksp.gen.NativeViewInfo
+import co.touchlab.compose.expect.swift.generator.ksp.gen.ViewType
+import co.touchlab.compose.expect.swift.generator.ksp.getKModifiers
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.uiKitView
 import net.pearx.kasechange.CaseFormat
 import net.pearx.kasechange.toPascalCase
 

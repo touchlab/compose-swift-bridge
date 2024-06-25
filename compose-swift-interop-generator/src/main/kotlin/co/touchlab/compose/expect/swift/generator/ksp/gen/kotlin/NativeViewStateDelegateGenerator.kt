@@ -1,12 +1,12 @@
-package dev.srsouza.swiftui.generator.gen.kotlin
+package co.touchlab.compose.expect.swift.generator.ksp.gen.kotlin
 
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.TypeSpec
-import dev.srsouza.swiftui.generator.gen.NativeViewInfo
-import dev.srsouza.swiftui.generator.util.Types
+import co.touchlab.compose.expect.swift.generator.ksp.gen.NativeViewInfo
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types
 
 fun buildNativeViewStateDelegateFiles(
     allNativeViews: List<NativeViewInfo>

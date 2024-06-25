@@ -1,4 +1,4 @@
-package dev.srsouza.swiftui.generator
+package co.touchlab.compose.expect.swift.generator.ksp
 
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.KSPLogger
@@ -10,17 +10,17 @@ import com.google.devtools.ksp.symbol.KSValueParameter
 import com.google.devtools.ksp.validate
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ksp.writeTo
-import dev.srsouza.swiftui.generator.gen.NativeViewInfo
-import dev.srsouza.swiftui.generator.gen.ViewType
-import dev.srsouza.swiftui.generator.gen.kotlin.buildLocalCompositionFile
-import dev.srsouza.swiftui.generator.gen.kotlin.buildNativeViewStateDelegateFiles
-import dev.srsouza.swiftui.generator.gen.kotlin.buildNativeViewsActualImplementationFiles
-import dev.srsouza.swiftui.generator.gen.kotlin.buildRawFactoryPerPlatformFiles
-import dev.srsouza.swiftui.generator.gen.readNativeViewComposable
-import dev.srsouza.swiftui.generator.gen.swift.buildNativeViewStateSwiftUIObservableObjectFiles
-import dev.srsouza.swiftui.generator.gen.swift.buildSwiftIdiomaticFactoryFiles
-import dev.srsouza.swiftui.generator.gen.swift.buildSwiftViewFactoryProtocolFiles
-import dev.srsouza.swiftui.generator.util.Types
+import co.touchlab.compose.expect.swift.generator.ksp.gen.NativeViewInfo
+import co.touchlab.compose.expect.swift.generator.ksp.gen.ViewType
+import co.touchlab.compose.expect.swift.generator.ksp.gen.kotlin.buildLocalCompositionFile
+import co.touchlab.compose.expect.swift.generator.ksp.gen.kotlin.buildNativeViewStateDelegateFiles
+import co.touchlab.compose.expect.swift.generator.ksp.gen.kotlin.buildNativeViewsActualImplementationFiles
+import co.touchlab.compose.expect.swift.generator.ksp.gen.kotlin.buildRawFactoryPerPlatformFiles
+import co.touchlab.compose.expect.swift.generator.ksp.gen.readNativeViewComposable
+import co.touchlab.compose.expect.swift.generator.ksp.gen.swift.buildNativeViewStateSwiftUIObservableObjectFiles
+import co.touchlab.compose.expect.swift.generator.ksp.gen.swift.buildSwiftIdiomaticFactoryFiles
+import co.touchlab.compose.expect.swift.generator.ksp.gen.swift.buildSwiftViewFactoryProtocolFiles
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types
 
 internal class SwiftUIViewInteropProcessor(
     private val codeGenerator: CodeGenerator,

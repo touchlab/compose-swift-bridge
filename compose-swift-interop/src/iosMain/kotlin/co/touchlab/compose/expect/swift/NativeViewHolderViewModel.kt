@@ -1,7 +1,6 @@
-package dev.srsouza.compose.swift.interop
+package co.touchlab.compose.expect.swift
 
 import androidx.lifecycle.ViewModel
-import platform.UIKit.UIViewController
 
 class NativeViewHolderViewModel<VIEW_TYPE : Any, DELEGATE : Any>(
     val factory: () -> Pair<VIEW_TYPE, DELEGATE>

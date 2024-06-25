@@ -1,4 +1,4 @@
-package dev.srsouza.swiftui.generator.util
+package co.touchlab.compose.expect.swift.generator.ksp.util
 
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.MemberName
@@ -7,7 +7,7 @@ import io.outfoxx.swiftpoet.GenericQualifiedTypeName
 
 object Types {
     val annotationName = "ExpectSwiftView"
-    val extensionPackage = "dev.srsouza.compose.swift.interop"
+    val extensionPackage = "co.touchlab.compose.expect.swift"
     val extensionDelegatePackage = "$extensionPackage.delegate"
     val extensionAnnotation = "$extensionPackage.$annotationName"
 

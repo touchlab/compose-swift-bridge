@@ -1,4 +1,4 @@
-package dev.srsouza.swiftui.generator
+package co.touchlab.compose.expect.swift.generator.ksp
 
 import com.google.devtools.ksp.processing.NativePlatformInfo
 import com.google.devtools.ksp.processing.SymbolProcessor

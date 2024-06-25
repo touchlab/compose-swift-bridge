@@ -1,14 +1,14 @@
-package dev.srsouza.swiftui.generator.gen.kotlin
+package co.touchlab.compose.expect.swift.generator.ksp.gen.kotlin
 
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
-import dev.srsouza.swiftui.generator.util.Types
-import dev.srsouza.swiftui.generator.util.Types.Members.composeNativeViewFactory
-import dev.srsouza.swiftui.generator.util.Types.Members.compositionLocalOf
-import dev.srsouza.swiftui.generator.util.Types.Members.localNativeViewFactory
-import dev.srsouza.swiftui.generator.util.Types.Members.providableCompositionLocal
-import dev.srsouza.swiftui.generator.gen.NativeViewInfo
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.composeNativeViewFactory
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.compositionLocalOf
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.localNativeViewFactory
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.providableCompositionLocal
+import co.touchlab.compose.expect.swift.generator.ksp.gen.NativeViewInfo
 
 /**
  * Generates all Local Composition for the all distinct
