@@ -96,12 +96,14 @@ android {
 }
 
 dependencies {
-    "kspCommonMainMetadata"(projects.composeSwiftInteropGenerator)
-    "kspAndroid"(projects.composeSwiftInteropGenerator)
+    "kspCommonMainMetadata"(projects.composeSwiftInteropKsp)
+    "kspAndroid"(projects.composeSwiftInteropKsp)
 
-    "kspIosSimulatorArm64"(projects.composeSwiftInteropGenerator)
-    "kspIosArm64"(projects.composeSwiftInteropGenerator)
-    "kspIosX64"(projects.composeSwiftInteropGenerator)
+    "kspIosSimulatorArm64"(projects.composeSwiftInteropKsp)
+    "kspIosArm64"(projects.composeSwiftInteropKsp)
+    "kspIosX64"(projects.composeSwiftInteropKsp)
+
+    skieSubPlugin(projects.composeSwiftInteropSkie)
 }
 
 tasks.withType<KspTaskNative>().configureEach {

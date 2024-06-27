@@ -69,6 +69,7 @@ fun AppScreen() {
                 .height(200.dp),
             coordinate = coordinate,
             title = title,
+            callback = {}
         )
 
         Spacer(Modifier.height(8.dp))

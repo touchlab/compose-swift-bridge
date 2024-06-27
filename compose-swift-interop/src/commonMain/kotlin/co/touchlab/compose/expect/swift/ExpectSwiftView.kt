@@ -27,6 +27,7 @@ package co.touchlab.compose.expect.swift
  * Note: This uses Androidx ViewModel under the hood, check with your Navigation
  * library if does support it.
  */
+@Target(AnnotationTarget.FUNCTION)
 annotation class ExpectSwiftView(
     val factoryName: String = "NativeView",
     val type: ViewType = ViewType.SwiftUI,

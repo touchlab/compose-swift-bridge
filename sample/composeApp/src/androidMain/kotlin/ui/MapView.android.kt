@@ -54,7 +54,8 @@ actual fun MapView(
 actual fun MapViewWithSwiftUI(
     modifier: Modifier,
     coordinate: MapCoordinates,
-    title: String
+    title: String,
+    callback: (String) -> Unit,
 ) {
     MapView(modifier, coordinate, title)
 }

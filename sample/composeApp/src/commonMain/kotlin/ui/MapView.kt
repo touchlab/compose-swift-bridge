@@ -25,6 +25,7 @@ expect fun MapViewWithSwiftUI(
     modifier: Modifier = Modifier,
     coordinate: MapCoordinates,
     title: String,
+    callback: (String) -> Unit
 )
 
 @ExpectSwiftView(

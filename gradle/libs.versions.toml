@@ -20,6 +20,8 @@ ksp = "1.9.22-1.0.17"
 
 androidx-lifecycle = "2.8.0-beta01"
 androidx-navigation = "2.8.0-alpha02"
+#skie = "0.8.2"
+skie = "1.0.0-SNAPSHOT"
 
 [libraries]
 kasechange = { module = "net.pearx.kasechange:kasechange", version.ref = "kasechange" }
@@ -59,13 +61,15 @@ ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "kto
 
 maps-compose = { module = "com.google.maps.android:maps-compose", version = "2.11.4" }
 maps-playService = { module = "com.google.android.gms:play-services-maps", version = "18.2.0" }
+skie-subPlugin-core = { module = "co.touchlab.skie:kotlin-compiler-core", version.ref = "skie" }
+skie-subPlugin-gradle = { module = "co.touchlab.skie:gradle-sub-plugin-api", version.ref = "skie" }
 
 [plugins]
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
-skie = { id = "co.touchlab.skie", version = "0.8.0" }
+skie = { id = "co.touchlab.skie", version.ref = "skie" }
 maps = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version = "2.0.1" }
 kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
