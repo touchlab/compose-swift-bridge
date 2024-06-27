@@ -107,31 +107,7 @@ dependencies {
 }
 
 tasks.withType<KspTaskNative>().configureEach {
-    val outputDirectory = layout.buildDirectory.dir("ksp/$target/swift")
-
-    outputs.dir(outputDirectory)
-
     options.add(SubpluginOption("apoption", "swiftInterop.targetName=$target"))
-    options.add(
-        provider {
-            SubpluginOption(
-                "apoption",
-                "swiftInterop.swiftOutputPath=${outputDirectory.get().asFile.absolutePath}"
-            )
-        }
-    )
-}
-
-tasks.withType<ProcessSwiftSourcesTask>().configureEach {
-    val targetSuffix = name.substringAfter("skieProcessSwiftSources")
-
-    val kspTask = tasks.matching { it is KspTaskNative && it.name.substringAfter("kspKotlin") == targetSuffix }
-
-    inputs.files(
-        provider {
-            kspTask.map { it.outputs }
-        }
-    )
 }
 
 tasks.withType<KotlinCompile<*>>().configureEach {
