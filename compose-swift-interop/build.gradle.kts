@@ -13,6 +13,8 @@ kotlin {
         }
     }
 
+    // TODO: add all the targets that Compose KMP supports
+
     iosX64()
     iosArm64()
     iosSimulatorArm64()

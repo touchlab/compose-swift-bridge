@@ -1,7 +1,8 @@
 package co.touchlab.compose.expect.swift
 
 /**
- * Annotation used internally for the SKIE SubPlugin, please don't use it!
+ * Annotation used internally for the SKIE SubPlugin.
+ * It should only be used by the code generator.
  */
 @Target(AnnotationTarget.CLASS)
 annotation class GeneratedExpectSwiftView(
