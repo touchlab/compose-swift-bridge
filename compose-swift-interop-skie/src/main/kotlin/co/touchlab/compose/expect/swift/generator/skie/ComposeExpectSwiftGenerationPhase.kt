@@ -5,6 +5,7 @@ import co.touchlab.compose.expect.swift.generator.skie.generation.swift.buildNat
 import co.touchlab.compose.expect.swift.generator.skie.generation.swift.buildSwiftIdiomaticFactory
 import co.touchlab.compose.expect.swift.generator.skie.generation.swift.buildSwiftViewFactoryProtocol
 import co.touchlab.compose.expect.swift.generator.skie.generation.swift.extensionPackage
+import co.touchlab.compose.expect.swift.generator.skie.generation.swift.generateReplacementForFunctionsWithViewFactoryParameter
 import co.touchlab.compose.expect.swift.generator.skie.generation.swift.nativeViewFactory
 import co.touchlab.skie.kir.element.KirModule
 import co.touchlab.skie.kir.element.KirSimpleFunction
@@ -32,8 +33,9 @@ object ComposeExpectSwiftGenerationPhase : SirPhase {
                     // Generate the binding between protocol and kotlin protocol
                     generateIdiomaticViewFactoryBinding(factoryName, refModule, views)
                 }
-
         }
+
+        generateReplacementForFunctionsWithViewFactoryParameter(viewsInfo)
     }
 
     context(SirPhase.Context)

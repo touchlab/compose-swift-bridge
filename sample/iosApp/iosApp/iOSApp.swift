@@ -13,7 +13,7 @@ struct iOSApp: App {
 
 struct MainView : UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> some UIViewController {
-        MainViewController(generatedViewFactory: iOSNativeViewFactory(SwiftUINativeViewFactory()))
+        MainViewController(generatedViewFactory: SwiftUINativeViewFactory())
     }
     
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}

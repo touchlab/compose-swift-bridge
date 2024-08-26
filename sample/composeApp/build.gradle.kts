@@ -46,6 +46,7 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
             implementation(compose.ui)
+            implementation(libs.skie.annotations)
         }
 
         androidMain.dependencies {

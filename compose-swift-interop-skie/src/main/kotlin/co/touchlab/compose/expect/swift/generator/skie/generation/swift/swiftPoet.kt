@@ -15,9 +15,13 @@ val observableObject = DeclaredTypeName.typeName("Foundation.ObservableObject")
 val published = DeclaredTypeName.typeName("Foundation.Published")
 val swiftUIAnyView = DeclaredTypeName.typeName("SwiftUI.AnyView")
 
+val iOSNativeViewFactoryInitParameterName = "nativeViewFactory"
+
+fun iOSNativeViewFactory(factoryName: String) = "iOS${nativeViewFactory(factoryName)}"
 fun nativeViewObservable(viewName: String) = DeclaredTypeName.typeName(
     qualifiedTypeName = ".${viewName}Observable"
 )
+fun composeNativeViewFactoryFqn(factoryName: String) = "${extensionPackage}.Compose${factoryName}Factory"
 fun nativeViewFactory(factoryName: String) = "${factoryName}Factory"
 fun factoryFunctionName(functionName: String) = "create${functionName}"
 

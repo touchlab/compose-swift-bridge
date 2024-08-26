@@ -20,8 +20,7 @@ ksp = "1.9.22-1.0.17"
 
 androidx-lifecycle = "2.8.0-beta01"
 androidx-navigation = "2.8.0-alpha02"
-#skie = "0.8.2"
-skie = "1.0.0-SNAPSHOT"
+skie = "0.8.4"
 
 [libraries]
 kasechange = { module = "net.pearx.kasechange:kasechange", version.ref = "kasechange" }
@@ -63,6 +62,7 @@ maps-compose = { module = "com.google.maps.android:maps-compose", version = "2.1
 maps-playService = { module = "com.google.android.gms:play-services-maps", version = "18.2.0" }
 skie-subPlugin-core = { module = "co.touchlab.skie:kotlin-compiler-core", version.ref = "skie" }
 skie-subPlugin-gradle = { module = "co.touchlab.skie:gradle-sub-plugin-api", version.ref = "skie" }
+skie-annotations = { module = "co.touchlab.skie:configuration-annotations", version.ref = "skie" }
 
 [plugins]
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }

@@ -57,7 +57,7 @@ internal fun buildSwiftIdiomaticFactory(
     composeNativeViewFactory: KirClass,
     kotlinPair: SirType,
 ): SwiftFileSpec {
-    val className = "iOS${nativeViewFactory(factoryName)}"
+    val className = iOSNativeViewFactory(factoryName)
     val classSpec = SwiftTypeSpec.classBuilder(className)
         .addModifiers(Modifier.PUBLIC)
         .addSuperType(
@@ -149,7 +149,7 @@ internal fun buildSwiftIdiomaticFactory(
     val initBuilder = FunctionSpec.constructorBuilder()
         .addModifiers(Modifier.PUBLIC)
     val viewFactoryProtocolName = nativeViewFactory(factoryName)
-    val viewFactoryParamName = "nativeViewFactory"
+    val viewFactoryParamName = iOSNativeViewFactoryInitParameterName
     val viewFactoryType = DeclaredTypeName.typeName(".$viewFactoryProtocolName")
 
     classSpec.addProperty(
