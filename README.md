@@ -104,12 +104,13 @@ a hole screen with SwiftUI and there is scrolling, if this is set to false,
 when you navigating away from the screen and back, the scroll state will be
 lose and the component will be recreated, by setting to true, the generator
 will wrap your View inside a ViewModel that will survive the composition
-and when going back, it will reuse the factory view instead. Notice should be
-avoid for small components that can easily be recreated without cost because
+and when going back, when reuse the same ViewController storage in the ViewModel. Notice: This should be
+avoid for small components that can easily be recreated without cost, because
 the ViewModel will survive even if you remove the Component from the Composition
 in the same screen, in this case, having a untended memory leak until the Screen
 that have started the Native view be disposed/removed from the stack.
-Note: This uses Androidx ViewModel under the hood, check with your Navigation library if does support it.
+Note: This uses Androidx ViewModel KMP under the hood, check with your Navigation library if does support it 
+on iOS target.
 
 ## Setup
 
