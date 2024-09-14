@@ -1,11 +1,12 @@
 plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.maven.publish)
 }
 
 kotlin {
     androidTarget {
+        publishLibraryVariants("release")
         compilations.all {
             kotlinOptions {
                 jvmTarget = "1.8"
@@ -13,19 +14,20 @@ kotlin {
         }
     }
 
-    // TODO: add all the targets that Compose KMP supports
-
     iosX64()
     iosArm64()
     iosSimulatorArm64()
 
-    jvm("desktop")
+    jvm()
+    js()
+    wasmJs()
+    macosArm64()
+    macosX64()
+    linuxArm64()
+    linuxX64()
+    mingwX64()
 
     sourceSets {
-        commonMain.dependencies {
-            implementation(compose.runtime)
-        }
-
         iosMain.dependencies {
             implementation(libs.androidx.lifecycle.viewmodel)
             api(libs.androidx.lifecycle.viewmodel.compose)

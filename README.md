@@ -125,15 +125,24 @@ plugins {
 ```
 
 ```kotlin
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation("co.touchlab.compose:compose-swift-interop:0.1.0-ALPHA")
+        }
+    }
+}
+
 dependencies {
-    "kspCommonMainMetadata"(projects.composeSwiftInteropGenerator) // TODO: Change here
-    "kspAndroid"(projects.composeSwiftInteropGenerator) // TODO: Change here
+    val composeSwiftInteropKsp = "co.touchlab.compose:compose-swift-interop-ksp:0.1.0-ALPHA"
+    "kspCommonMainMetadata"(composeSwiftInteropKsp)
+    "kspAndroid"(composeSwiftInteropKsp)
 
-    "kspIosSimulatorArm64"(projects.composeSwiftInteropGenerator) // TODO: Change here
-    "kspIosArm64"(projects.composeSwiftInteropGenerator) // TODO: Change here
-    "kspIosX64"(projects.composeSwiftInteropGenerator) // TODO: Change here
+    "kspIosSimulatorArm64"(composeSwiftInteropKsp)
+    "kspIosArm64"(composeSwiftInteropKsp)
+    "kspIosX64"(composeSwiftInteropKsp)
 
-    skieSubPlugin(projects.composeSwiftInteropSkie) // TODO: Change here
+    skieSubPlugin("co.touchlab.compose:compose-swift-interop-skie:0.1.0-ALPHA")
 }
 
 tasks.withType<KspTaskNative>().configureEach {
@@ -159,13 +168,26 @@ Considerations:
 
 The modules containing Compose UI and the expect composable with @ExpectSwiftView
 ```kotlin
-dependencies {
-    "kspCommonMainMetadata"(projects.composeSwiftInteropGenerator) // TODO: Change here
-    "kspAndroid"(projects.composeSwiftInteropGenerator) // TODO: Change here
+plugins {
+    alias(libs.plugins.ksp) // TODO: Change here
+}
 
-    "kspIosSimulatorArm64"(projects.composeSwiftInteropGenerator) // TODO: Change here
-    "kspIosArm64"(projects.composeSwiftInteropGenerator) // TODO: Change here
-    "kspIosX64"(projects.composeSwiftInteropGenerator) // TODO: Change here
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation("co.touchlab.compose:compose-swift-interop:0.1.0-ALPHA")
+        }
+    }
+}
+
+dependencies {
+    val composeSwiftInteropKsp = "co.touchlab.compose:compose-swift-interop-ksp:0.1.0-ALPHA"
+    "kspCommonMainMetadata"(composeSwiftInteropKsp)
+    "kspAndroid"(composeSwiftInteropKsp)
+
+    "kspIosSimulatorArm64"(composeSwiftInteropKsp)
+    "kspIosArm64"(composeSwiftInteropKsp)
+    "kspIosX64"(composeSwiftInteropKsp)
 }
 
 tasks.withType<KspTaskNative>().configureEach {
@@ -183,8 +205,12 @@ tasks.withType<KotlinCompile<*>>().configureEach {
 
 The umbrella module (that module that packs all modules to generate the iOS Framework)
 ```kotlin
+plugins {
+    alias(libs.plugins.skie) // TODO: Change here
+}
+
 dependencies {
-    skieSubPlugin(projects.composeSwiftInteropSkie) // TODO: Change here
+    skieSubPlugin("co.touchlab.compose:compose-swift-interop-skie:0.1.0-ALPHA")
 }
 
 // configuring the export like this
