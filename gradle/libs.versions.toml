@@ -8,7 +8,7 @@ compose-plugin = "1.6.10-beta02"
 junit = "4.13.2"
 kasechange = "1.4.1"
 kotlin = "1.9.22"
-kotlinpoet = "1.16.0"
+kotlinpoet = "1.18.1"
 swiftpoet = "1.6.5"
 voyager = "1.1.0-beta01"
 coil="3.0.0-alpha06"
@@ -35,6 +35,8 @@ kotlinpoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlin
 plugin-ksp = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 
+ktxCoroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version = "1.8.1" }
+ktxSerialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
 ktxSerialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
 
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version = "1.8.2" }
@@ -43,12 +45,13 @@ androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:life
 androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
 
 swiftpoet = { module = "io.outfoxx:swiftpoet", version.ref = "swiftpoet" }
+voyager-core = { module = "cafe.adriel.voyager:voyager-core", version.ref = "voyager" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-tabNavigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 voyager-bottomSheetNavigator = { module = "cafe.adriel.voyager:voyager-bottom-sheet-navigator", version.ref = "voyager" }
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 voyager-model = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
-voyager-lifecycle = { module = "cafe.adriel.voyager:voyager-lifecycle-kmp", version.ref = "voyager" }
+voyager-lifecycleKmp = { module = "cafe.adriel.voyager:voyager-lifecycle-kmp", version.ref = "voyager" }
 
 coil-core = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
 coil-ktor = { module = "io.coil-kt.coil3:coil-network-ktor", version.ref = "coil" }

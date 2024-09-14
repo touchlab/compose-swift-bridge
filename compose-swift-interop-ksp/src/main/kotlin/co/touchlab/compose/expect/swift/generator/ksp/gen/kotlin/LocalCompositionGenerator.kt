@@ -44,7 +44,7 @@ fun buildLocalCompositionFile(
             name = localCompositionName,
             type = localCompositionType,
         ).initializer(
-            "%M { error(\"\"\"You have to provide ${localCompositionName}\"\"\") }",
+            "%M(defaultFactory = { error(\"\"\"You have to provide ${localCompositionName}\"\"\") })",
             compositionLocalOf
         ).build()
 
