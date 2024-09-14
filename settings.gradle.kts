@@ -21,6 +21,11 @@ dependencyResolutionManagement {
 }
 
 include(":sample:composeApp")
+include(":sample:multimodule:feature-detail")
+include(":sample:multimodule:feature-list")
+include(":sample:multimodule:ios-umbrella")
+include(":sample:multimodule:common")
+include(":sample:multimodule:navigation")
 include(":compose-swift-interop-ksp")
 include(":compose-swift-interop-skie")
 include(":compose-swift-interop")
