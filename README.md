@@ -27,7 +27,7 @@ expect fun MapViewExampleUiKit(
 )
 ```
 
-On the iOS target, we need to request the Factory interface in the Compose UIViewController function
+On the iOS target (iosMain), we need to request the Factory interface in the Compose UIViewController function
 and provide it in the Local Composition.
 
 iosMain:
@@ -43,7 +43,7 @@ fun MainViewController(
 }
 ```
 
-On iOS, we need to implement the `NativeViewFactory` and pass it to `MainViewController`.
+On iOS project, we need to implement the `NativeViewFactory` and pass it to `MainViewController`.
 We receive a ObservableObject that contains all State parameters from the defined expect function,
 when Compose recompose with a new state, only that parameter will be updated on SwiftUI.
 
@@ -64,21 +64,56 @@ class SwiftUINativeViewFactory : NativeViewFactory {
     }
 ```
 
-We update MainViewController call passing the `iOSNativeViewFactory(SwiftUINativeViewFactory())`
+We update MainViewController call passing the `SwiftUINativeViewFactory()`
 
 ```swift
 struct MainView : UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> some UIViewController {
-        MainViewController(generatedViewFactory: iOSNativeViewFactory(SwiftUINativeViewFactory()))
+        MainViewController(generatedViewFactory: SwiftUINativeViewFactory())
     }
     
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {}
 }
 ```
 
+### Annotation configurations
+
+```
+annotation class ExpectSwiftView(
+    val factoryName: String = "NativeView",
+    val type: ViewType = ViewType.SwiftUI,
+    val keepStateCrossNavigation: Boolean = false
+)
+```
+
+The code generation works by generating the actual function in the iOS target, this function
+also uses a generate Factory interface that contains all factory functions to each of the annotated
+Composable function with `@ExpectSwiftView`.
+
+`factoryName`: Defines the name of the generated factories interfaces. By default the name of the factory
+is called `NativeView`, when the following functions, interfaces are generated with this name, for example:
+NativeView**Factory**(Used on iOS for the implementing the factory), **Compose**NativeView**Factory**(The type used as parameter in the Composable ViewController),
+**Local**NativeView**Factory**(The local composition that you provide with ComposeNativeViewFactory at Composable ViewController).
+
+This is mostly important when you want to fragment in multiple factories with their own responsibility or when you are
+using Multi module setup and you should use a per Module Factory Name.
+
+`keepStateCrossNavigation`: Used when your native view has it own state
+and it should be kept when navigating back, for example, if you are replacing
+a hole screen with SwiftUI and there is scrolling, if this is set to false,
+when you navigating away from the screen and back, the scroll state will be
+lose and the component will be recreated, by setting to true, the generator
+will wrap your View inside a ViewModel that will survive the composition
+and when going back, it will reuse the factory view instead. Notice should be
+avoid for small components that can easily be recreated without cost because
+the ViewModel will survive even if you remove the Component from the Composition
+in the same screen, in this case, having a untended memory leak until the Screen
+that have started the Native view be disposed/removed from the stack.
+Note: This uses Androidx ViewModel under the hood, check with your Navigation library if does support it.
+
 ## Setup
 
-This is a KSP generator that uses SKIE Bundling Swift 0.8.0 feature, is required to have both setup in
+This is a KSP generator that uses SKIE Bundling Swift 0.8.4 feature, is required to have both setup in
 your project.
 
 ```kotlin
@@ -96,43 +131,73 @@ dependencies {
     "kspIosSimulatorArm64"(projects.composeSwiftInteropGenerator) // TODO: Change here
     "kspIosArm64"(projects.composeSwiftInteropGenerator) // TODO: Change here
     "kspIosX64"(projects.composeSwiftInteropGenerator) // TODO: Change here
+
+    skieSubPlugin(projects.composeSwiftInteropSkie) // TODO: Change here
 }
 
 tasks.withType<KspTaskNative>().configureEach {
-    val outputDirectory = layout.buildDirectory.dir("ksp/$target/swift")
-
-    outputs.dir(outputDirectory)
-
     options.add(SubpluginOption("apoption", "swiftInterop.targetName=$target"))
-    options.add(
-        provider {
-            SubpluginOption(
-                "apoption",
-                "swiftInterop.swiftOutputPath=${outputDirectory.get().asFile.absolutePath}"
-            )
-        }
-    )
 }
 
-tasks.withType<ProcessSwiftSourcesTask>().configureEach {
-    val targetSuffix = name.substringAfter("skieProcessSwiftSources")
-
-    val kspTask = tasks.matching { it is KspTaskNative && it.name.substringAfter("kspKotlin") == targetSuffix }
-
-    inputs.files(
-        provider {
-            kspTask.map { it.outputs }
-        }
-    )
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.dsl.KotlinCompile<*>>().all {
-    if(name != "kspCommonMainKotlinMetadata") {
+// support for generating ksp code in commonCode
+// see https://github.com/google/ksp/issues/567
+tasks.withType<KotlinCompile<*>>().configureEach {
+    if (name != "kspCommonMainKotlinMetadata") {
         dependsOn("kspCommonMainKotlinMetadata")
     }
 }
+```
 
-kotlin.sourceSets.commonMain {
-    kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+### Multi Module setup
+
+Sample can be found [here](sample/multimodule).
+
+Considerations:
+1. Each of your Modules should have a different Factory Name configured in the annotations.
+2. The modules should be exported to iOS (aka ``framework { export(project("your_module")) }``)
+
+The modules containing Compose UI and the expect composable with @ExpectSwiftView
+```kotlin
+dependencies {
+    "kspCommonMainMetadata"(projects.composeSwiftInteropGenerator) // TODO: Change here
+    "kspAndroid"(projects.composeSwiftInteropGenerator) // TODO: Change here
+
+    "kspIosSimulatorArm64"(projects.composeSwiftInteropGenerator) // TODO: Change here
+    "kspIosArm64"(projects.composeSwiftInteropGenerator) // TODO: Change here
+    "kspIosX64"(projects.composeSwiftInteropGenerator) // TODO: Change here
+}
+
+tasks.withType<KspTaskNative>().configureEach {
+    options.add(SubpluginOption("apoption", "swiftInterop.targetName=$target"))
+}
+
+// support for generating ksp code in commonCode
+// see https://github.com/google/ksp/issues/567
+tasks.withType<KotlinCompile<*>>().configureEach {
+    if (name != "kspCommonMainKotlinMetadata") {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
+}
+```
+
+The umbrella module (that module that packs all modules to generate the iOS Framework)
+```kotlin
+dependencies {
+    skieSubPlugin(projects.composeSwiftInteropSkie) // TODO: Change here
+}
+
+// configuring the export like this
+kotlin {
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            ...
+
+            export(project(":the-module-that-contains-compose"))
+        }
+    }
 }
 ```
