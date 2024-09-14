@@ -10,6 +10,9 @@ import co.touchlab.compose.expect.swift.generator.ksp.GeneratorTarget
 import co.touchlab.compose.expect.swift.generator.ksp.gen.NativeViewInfo
 import co.touchlab.compose.expect.swift.generator.ksp.gen.ViewType
 import co.touchlab.compose.expect.swift.generator.ksp.util.Types
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.composeNativeViewFactory
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.nativeViewFactory
+import com.squareup.kotlinpoet.TypeAliasSpec
 
 fun buildRawFactoryPerPlatformFiles(
     allNativeViews: List<NativeViewInfo>,
@@ -69,10 +72,25 @@ private fun buildRawFactoryPerPlatform(
     val interfaceType = Types.Members.composeNativeViewFactory(factoryName)
     val interfaceSpec = TypeSpec.interfaceBuilder(interfaceType)
 
+    val fileSpec = FileSpec.builder(
+        packageName = interfaceType.packageName,
+        fileName = "${interfaceType.simpleName}${target.fileSuffix}"
+    )
+
     when(target) {
         GeneratorTarget.COMMON -> {
             // generate expect actual
             interfaceSpec.addModifiers(KModifier.EXPECT)
+
+            // Generates a type alias in the common main with the same name expect
+            // iOS protocol to avoid type name confusion between platform.
+            fileSpec.addTypeAlias(
+                TypeAliasSpec.builder(
+                    name = nativeViewFactory(factoryName),
+                    type = composeNativeViewFactory(factoryName)
+                )
+                    .build()
+            )
         }
         GeneratorTarget.IOS -> {
             // generate actual for ios target with all factory methods
@@ -115,10 +133,7 @@ private fun buildRawFactoryPerPlatform(
         }
     }
 
-    return FileSpec.builder(
-        packageName = interfaceType.packageName,
-        fileName = "${interfaceType.simpleName}${target.fileSuffix}"
-    )
+    return fileSpec
         .addType(interfaceSpec.build())
         .build()
 }

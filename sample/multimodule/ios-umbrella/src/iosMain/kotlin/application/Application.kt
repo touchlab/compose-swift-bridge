@@ -25,8 +25,8 @@ import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.jetpack.ProvideNavigatorLifecycleKMPSupport
 import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.Navigator
-import co.touchlab.compose.expect.swift.ComposeDetailFactory
-import co.touchlab.compose.expect.swift.ComposeListFactory
+import co.touchlab.compose.expect.swift.DetailFactory
+import co.touchlab.compose.expect.swift.ListFactory
 import co.touchlab.compose.expect.swift.LocalDetailFactory
 import co.touchlab.compose.expect.swift.LocalListFactory
 import feature.detail.DetailScreen
@@ -35,8 +35,8 @@ import navigation.SharedScreen
 import platform.UIKit.UIViewController
 
 fun MainComposableViewController(
-    listFeatureNativeViews: ComposeListFactory,
-    detailFeatureNativeViews: ComposeDetailFactory,
+    listFeatureNativeViews: ListFactory,
+    detailFeatureNativeViews: DetailFactory,
 ): UIViewController {
     ScreenRegistry {
         register<SharedScreen.List> {
@@ -58,8 +58,8 @@ fun MainComposableViewController(
 @OptIn(ExperimentalVoyagerApi::class)
 @Composable
 private fun Application(
-    listFeatureNativeViews: ComposeListFactory,
-    detailFeatureNativeViews: ComposeDetailFactory,
+    listFeatureNativeViews: ListFactory,
+    detailFeatureNativeViews: DetailFactory,
 ) {
     CompositionLocalProvider(
         LocalListFactory provides listFeatureNativeViews,
