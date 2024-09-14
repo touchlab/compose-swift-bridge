@@ -6,7 +6,7 @@ Compose state changes to the SwiftUI and UIKit.
 
 ## How to use it
 
-Annotate a `expect fun` with `@ExpectSwiftView`
+Annotate a `@Composable expect fun` with `@ExpectSwiftView`
 
 commonMain:
 ```kotlin
@@ -33,7 +33,7 @@ and provide it in the Local Composition.
 iosMain:
 ```kotlin
 fun MainViewController(
-    generatedViewFactory: ComposeNativeViewFactory
+    generatedViewFactory: NativeViewFactory
 ): UIViewController = ComposeUIViewController {
     CompositionLocalProvider(
         LocalNativeViewFactory provides generatedViewFactory,
@@ -92,8 +92,8 @@ Composable function with `@ExpectSwiftView`.
 
 `factoryName`: Defines the name of the generated factories interfaces. By default the name of the factory
 is called `NativeView`, when the following functions, interfaces are generated with this name, for example:
-NativeView**Factory**(Used on iOS for the implementing the factory), **Compose**NativeView**Factory**(The type used as parameter in the Composable ViewController),
-**Local**NativeView**Factory**(The local composition that you provide with ComposeNativeViewFactory at Composable ViewController).
+NativeView**Factory**(Used on iOS for the implementing the factory),
+**Local**NativeView**Factory**(The local composition that you have to provide in order to the expect function to work).
 
 This is mostly important when you want to fragment in multiple factories with their own responsibility or when you are
 using Multi module setup and you should use a per Module Factory Name.
