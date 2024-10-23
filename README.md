@@ -112,7 +112,9 @@ tasks.withType<KotlinCompile<*>>().configureEach {
 Sample can be found [here](sample/multimodule).
 
 Considerations:
-1. Each of your Modules should have a different Factory Name configured in the annotations.
+1. Each of your Modules should have a different Factory Name configured, so you have two options:
+   1. Making sure that each Expect Composable has being configured with a Custom Factory name.
+   2. Or less error prune, using KSP property `ksp { arg("compose-swift-interop.defaultFactoryName", "MyModuleNameView") }`. (See sample bellow)
 2. The modules should be exported to iOS (aka ``framework { export(project("your_module")) }``)
 
 The modules containing Compose UI and the expect composable with @ExpectSwiftView
@@ -140,7 +142,12 @@ dependencies {
 }
 
 tasks.withType<KspTaskNative>().configureEach {
-    options.add(SubpluginOption("apoption", "swiftInterop.targetName=$target"))
+    options.add(SubpluginOption("apoption", "compose-swift-interop.targetName=$target"))
+}
+
+ksp {
+    // Configure the module with a custom default factory name, the default is called "NativeView"
+    arg("compose-swift-interop.defaultFactoryName", "MyModuleNameView")
 }
 
 // support for generating ksp code in commonCode
@@ -200,9 +207,9 @@ NativeView**Factory**(Used on iOS for the implementing the factory),
 **Local**NativeView**Factory**(The local composition that you have to provide in order to the expect function to work).
 
 This is mostly important when you want to fragment in multiple factories with their own responsibility or when you are
-using Multi module setup and you should use a per Module Factory Name.
+using Multi module setup and don't want to use the KSP property, you should use a custom Factory Name for all your Expect Swift Views.
 
-`keepStateCrossNavigation`: Used when your native view has it own state
+`keepStateCrossNavigation`: Used when your native view (for example your SwiftUI View) has it own state
 and it should be kept when navigating back, for example, if you are replacing
 a hole screen with SwiftUI and there is scrolling, if this is set to false,
 when you navigating away from the screen and back, the scroll state will be

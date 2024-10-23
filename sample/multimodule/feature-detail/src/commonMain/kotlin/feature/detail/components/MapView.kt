@@ -6,7 +6,7 @@ import co.touchlab.compose.expect.swift.ExpectSwiftView
 import common.data.MapCoordinates
 
 @Composable
-@ExpectSwiftView(factoryName = "Detail")
+@ExpectSwiftView
 expect fun MapView(
     modifier: Modifier,
     placeName: String,

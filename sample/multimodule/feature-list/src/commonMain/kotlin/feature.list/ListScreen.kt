@@ -51,7 +51,7 @@ class ListScreen : Screen {
 }
 
 @Composable
-@ExpectSwiftView(factoryName = "List")
+@ExpectSwiftView
 internal expect fun ListScreenContent(
     modifier: Modifier,
     viewModel: ListViewModel,

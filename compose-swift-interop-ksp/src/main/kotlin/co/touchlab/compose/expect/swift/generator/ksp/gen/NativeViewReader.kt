@@ -52,6 +52,7 @@ internal const val DEFAULT_KEEP_STATE_CROSS_NAVIGATION = false
 internal val DEFAULT_VIEW_TYPE = ViewType.SwiftUI
 
 fun readNativeViewComposable(
+    defaultFactoryName: String,
     logger: KSPLogger,
     function: KSFunctionDeclaration
 ): NativeViewInfo? {
@@ -77,7 +78,7 @@ fun readNativeViewComposable(
         ?.arguments
         ?.firstOrNull { it.name?.getShortName() == "factoryName" }
         ?.value as? String?
-        ?: DEFAULT_FACTORY_NAME // In case KSP can't resolve the default value, we fallback to the default
+        ?: defaultFactoryName
 
     val viewType = (expectSwift
         ?.arguments

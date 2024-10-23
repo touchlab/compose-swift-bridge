@@ -17,11 +17,13 @@ import co.touchlab.compose.expect.swift.generator.ksp.gen.kotlin.buildNativeView
 import co.touchlab.compose.expect.swift.generator.ksp.gen.kotlin.buildRawFactoryPerPlatformFiles
 import co.touchlab.compose.expect.swift.generator.ksp.gen.readNativeViewComposable
 import co.touchlab.compose.expect.swift.generator.ksp.util.Types
+import kotlin.math.log
 
 internal class SwiftUIViewInteropProcessor(
     private val codeGenerator: CodeGenerator,
     private val logger: KSPLogger,
     private val target: GeneratorTarget,
+    private val defaultFactoryName: String,
 ) : SymbolProcessor {
 
     private val collectedNativeViews: MutableList<NativeViewInfo> = mutableListOf()
@@ -32,10 +34,12 @@ internal class SwiftUIViewInteropProcessor(
             .filter { it.validate() }
             .toList()
 
-        logger.warn("processing swift")
-
         val viewsInfo = symbols.mapNotNull {
-            readNativeViewComposable(logger, it)
+            readNativeViewComposable(
+                defaultFactoryName = defaultFactoryName,
+                logger =  logger,
+                function = it
+            )
         }
 
         collectedNativeViews += viewsInfo

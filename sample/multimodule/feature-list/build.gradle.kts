@@ -74,6 +74,10 @@ dependencies {
     "kspIosX64"(projects.composeSwiftInteropKsp)
 }
 
+ksp {
+    arg("compose-swift-interop.defaultFactoryName", "List")
+}
+
 tasks.withType<KspTaskNative>().configureEach {
     options.add(SubpluginOption("apoption", "swiftInterop.targetName=$target"))
 }
