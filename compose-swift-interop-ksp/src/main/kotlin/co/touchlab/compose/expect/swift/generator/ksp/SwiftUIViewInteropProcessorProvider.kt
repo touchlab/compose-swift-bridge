@@ -33,7 +33,7 @@ internal class SwiftUIViewInteropProcessorProvider : SymbolProcessorProvider {
         } else if(environment.platforms.any { it !is NativePlatformInfo }) {
             GeneratorTarget.NON_IOS
         } else {
-            val safeTargetName = targetName ?: throw IllegalArgumentException("Missing swiftInterop.targetName, see docs")
+            val safeTargetName = targetName ?: throw IllegalArgumentException("Missing compose-swift-interop.targetName, see docs")
             if(safeTargetName.contains("ios", ignoreCase = true)) {
                 GeneratorTarget.IOS
             } else {

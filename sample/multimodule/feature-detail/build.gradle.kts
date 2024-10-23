@@ -78,7 +78,7 @@ ksp {
 }
 
 tasks.withType<KspTaskNative>().configureEach {
-    options.add(SubpluginOption("apoption", "swiftInterop.targetName=$target"))
+    options.add(SubpluginOption("apoption", "compose-swift-interop.targetName=$target"))
 }
 
 tasks.withType<KotlinCompile<*>>().configureEach {
