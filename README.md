@@ -4,7 +4,7 @@ Compose Swift Interop is a experimental tool that helps you define expect compos
 implemented later on the iOS Project using Swift. The tool works by generating Kotlin and Swift code
 based on the Annotated Expect Composable and generated a View factory interface that will be implemented
 by you in the iOS Project. Also the tool generates a ObservableObject for each parameter in the Expect Composable function
-allowing to easily keep the state parameter updated in the SwiftUI View.
+allowing to easily keep the state parameter updated in the SwiftUI View. This all possible by using [SKIE](https://skie.touchlab.co/) Sub Plugin API and KSP.
 
 ## Let see in practice how it works
 
