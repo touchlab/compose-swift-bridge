@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.skie)
     alias(libs.plugins.maps)
     alias(libs.plugins.ksp)
@@ -50,7 +51,6 @@ kotlin {
         }
 
         androidMain.dependencies {
-            implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.maps.compose)
             implementation(libs.maps.playService)
@@ -89,10 +89,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    dependencies {
-        debugImplementation(libs.compose.ui.tooling)
     }
 }
 

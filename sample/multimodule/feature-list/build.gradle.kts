@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.ksp)
 }
 
@@ -48,7 +49,6 @@ kotlin {
         }
 
         androidMain.dependencies {
-            implementation(libs.compose.ui.tooling.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.maps.compose)
             implementation(libs.maps.playService)
@@ -59,10 +59,6 @@ kotlin {
 android {
     namespace = "co.touchlab.compose.swift.interop.list"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    dependencies {
-        debugImplementation(libs.compose.ui.tooling)
-    }
 }
 
 dependencies {

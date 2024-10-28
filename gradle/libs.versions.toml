@@ -3,11 +3,10 @@ android-compileSdk = "34"
 android-minSdk = "24"
 android-targetSdk = "34"
 
-compose = "1.6.2"
-compose-plugin = "1.6.10-beta02"
+compose = "1.7.0"
 junit = "4.13.2"
 kasechange = "1.4.1"
-kotlin = "1.9.22"
+kotlin = "2.0.21"
 kotlinpoet = "1.18.1"
 swiftpoet = "1.6.5"
 voyager = "1.1.0-beta01"
@@ -16,11 +15,11 @@ ktor = "2.3.9"
 agp = "8.2.0"
 kotlinxSerialization = "1.6.3"
 
-ksp = "1.9.22-1.0.17"
+ksp = "2.0.21-1.0.26"
 
 androidx-lifecycle = "2.8.0-beta01"
 androidx-navigation = "2.8.0-alpha02"
-skie = "0.8.4"
+skie = "0.9.3"
 mavenPublish = "0.27.0"
 
 [libraries]
@@ -28,8 +27,6 @@ kasechange = { module = "net.pearx.kasechange:kasechange", version.ref = "kasech
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
 
 kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
 kotlinpoet-ksp = { module = "com.squareup:kotlinpoet-ksp", version.ref = "kotlinpoet" }
@@ -69,7 +66,8 @@ skie-subPlugin-gradle = { module = "co.touchlab.skie:gradle-sub-plugin-api", ver
 skie-annotations = { module = "co.touchlab.skie:configuration-annotations", version.ref = "skie" }
 
 [plugins]
-jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }

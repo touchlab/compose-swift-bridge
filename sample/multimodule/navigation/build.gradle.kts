@@ -30,8 +30,4 @@ kotlin {
 android {
     namespace = "co.touchlab.compose.swift.interop.navigation"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    dependencies {
-        debugImplementation(libs.compose.ui.tooling)
-    }
 }
