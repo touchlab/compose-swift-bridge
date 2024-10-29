@@ -100,7 +100,7 @@ tasks.withType<KspTaskNative>().configureEach {
 
 // support for generating ksp code in commonCode
 // see https://github.com/google/ksp/issues/567
-tasks.withType<KotlinCompile<*>>().configureEach {
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile<*>>().configureEach {
     if (name != "kspCommonMainKotlinMetadata") {
         dependsOn("kspCommonMainKotlinMetadata")
     }
@@ -152,7 +152,7 @@ ksp {
 
 // support for generating ksp code in commonCode
 // see https://github.com/google/ksp/issues/567
-tasks.withType<KotlinCompile<*>>().configureEach {
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile<*>>().configureEach {
     if (name != "kspCommonMainKotlinMetadata") {
         dependsOn("kspCommonMainKotlinMetadata")
     }

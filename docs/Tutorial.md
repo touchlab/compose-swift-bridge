@@ -9,7 +9,8 @@ There are type types of setup:
 
 ### Single module approach
 
-The tool requires [SKIE](https://skie.touchlab.co/) and KSP be configure in your project `build.gradle.kts` for example:
+The tool requires [SKIE](https://skie.touchlab.co/) and [KSP](https://github.com/google/ksp) be configure in your project `build.gradle.kts` for example:
+You can find KSP versions [at their github page](https://github.com/google/ksp).
 
 ```kotlin
 plugins {
@@ -58,16 +59,20 @@ We need to Configure KSP to be able to identify the target that is running for t
 
 ```kotlin
 // Adds the required targetName for the KSP plugin
-tasks.withType<KspTaskNative>().configureEach {
+tasks.withType<com.google.devtools.ksp.gradle.KspTaskNative>().configureEach {
     options.add(SubpluginOption("apoption", "compose-swift-interop.targetName=$target"))
 }
 
 // support for generating ksp code in commonCode
 // see https://github.com/google/ksp/issues/567
-tasks.withType<KotlinCompile<*>>().configureEach {
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile<*>>().configureEach {
     if (name != "kspCommonMainKotlinMetadata") {
         dependsOn("kspCommonMainKotlinMetadata")
     }
+}
+
+kotlin.sourceSets.commonMain {
+   kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
 }
 ```
 
@@ -124,7 +129,7 @@ dependencies {
 }
 
 // Adds the required targetName for the KSP plugin
-tasks.withType<KspTaskNative>().configureEach {
+tasks.withType<com.google.devtools.ksp.gradle.KspTaskNative>().configureEach {
    options.add(SubpluginOption("apoption", "compose-swift-interop.targetName=$target"))
 }
 
@@ -135,10 +140,14 @@ ksp {
 
 // support for generating ksp code in commonCode
 // see https://github.com/google/ksp/issues/567
-tasks.withType<KotlinCompile<*>>().configureEach {
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile<*>>().configureEach {
    if (name != "kspCommonMainKotlinMetadata") {
       dependsOn("kspCommonMainKotlinMetadata")
    }
+}
+
+kotlin.sourceSets.commonMain {
+   kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
 }
 ```
 
@@ -199,6 +208,11 @@ fun MainViewController(
 ```
 
 ### 2.3: The SwiftUI Native Component
+
+In order to start writing Swift, we want XCode to find the new files, for that, you should build KMP framework,
+if you are using Build Phase setup at XCode project(The KMP build is linkage directly into XCode build), you can just
+try run the project in order to have a update framework at the XCode, it will fail, because of the modification we did
+so far, but you will now have auto complete to the new generate files.
 
 Lets start by the sample Map View using SwiftUI close to what the Composable that we define previously,
 we need a `title` and `coordinate`, so here is a example Map View implementation following this.
