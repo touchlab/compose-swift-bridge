@@ -28,7 +28,7 @@ data class NativeViewParameterInfo(
 data class KotlinNativeViewInfo(
     val kspRef: KSFunctionDeclaration,
     val visibility: KModifier,
-    val modifierParamName: String,
+    val modifierParamName: String?,
     val file: KSFile,
 )
 
@@ -106,7 +106,7 @@ fun readNativeViewComposable(
         }
 
         val isModifier = parameter.type.resolve().declaration.qualifiedName
-            ?.asString() == Types.modifierFqn
+            ?.asString() == Types.Members.modifier.canonicalName
 
         val kotlinType = parameter.type.toTypeName()
 
@@ -121,8 +121,7 @@ fun readNativeViewComposable(
     val modifierParam = parameters.firstOrNull { it.isModifier }?.name
 
     if(modifierParam == null) {
-        logger.warn("$errorTag  does not contain a Modifier parameter", function)
-        return null
+        logger.warn("$errorTag is recommend to have a Modifier parameter in @ExpectSwiftView functions", function)
     }
 
     return NativeViewInfo(

@@ -18,6 +18,7 @@ import co.touchlab.compose.expect.swift.generator.ksp.util.Types.factoryFunction
 import co.touchlab.compose.expect.swift.generator.ksp.gen.NativeViewInfo
 import co.touchlab.compose.expect.swift.generator.ksp.gen.ViewType
 import co.touchlab.compose.expect.swift.generator.ksp.getKModifiers
+import co.touchlab.compose.expect.swift.generator.ksp.util.Types
 import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.uiKitView
 import net.pearx.kasechange.CaseFormat
 import net.pearx.kasechange.toPascalCase
@@ -196,13 +197,19 @@ fun buildNativeViewActual(
     }
 
     funSpec.addCode("\n")
+
+    val funSpecMembers = listOfNotNull(
+        interopComposableBasedOnViewType,
+        if (viewInfo.kotlinInfo.modifierParamName == null) Types.Members.modifier else null
+    ).toTypedArray()
+
     funSpec.addCode("""
         %M(
-            modifier = ${viewInfo.kotlinInfo.modifierParamName},
+            modifier = ${viewInfo.kotlinInfo.modifierParamName ?: "%T"},
             factory = { view },
             update = { },
         )
-    """.trimIndent(), interopComposableBasedOnViewType)
+    """.trimIndent(), *funSpecMembers)
 
     return funSpec.build()
 }

@@ -9,8 +9,6 @@ object Types {
     val extensionDelegatePackage = "$extensionPackage.delegate"
     val extensionAnnotation = "$extensionPackage.$annotationName"
 
-    val modifierFqn = "androidx.compose.ui.Modifier"
-
     fun factoryFunctionName(functionName: String) = "create${functionName}"
 
     object Members {
@@ -79,6 +77,10 @@ object Types {
         val uiView = ClassName(
             packageName = "platform.UIKit",
             "UIView"
+        )
+        val modifier = ClassName(
+            packageName = "androidx.compose.ui",
+            "Modifier"
         )
     }
 }
