@@ -24,6 +24,8 @@ internal class SwiftUIViewInteropProcessor(
     private val logger: KSPLogger,
     private val target: GeneratorTarget,
     private val defaultFactoryName: String,
+    private val defaultViewControllerInteropComposableFqn: String,
+    private val defaultUiKitViewInteropComposableFqn: String,
 ) : SymbolProcessor {
 
     private val collectedNativeViews: MutableList<NativeViewInfo> = mutableListOf()
@@ -37,8 +39,10 @@ internal class SwiftUIViewInteropProcessor(
         val viewsInfo = symbols.mapNotNull {
             readNativeViewComposable(
                 defaultFactoryName = defaultFactoryName,
+                defaultViewControllerInteropComposableFqn = defaultViewControllerInteropComposableFqn,
+                defaultUiKitViewInteropComposableFqn = defaultUiKitViewInteropComposableFqn,
                 logger =  logger,
-                function = it
+                function = it,
             )
         }
 

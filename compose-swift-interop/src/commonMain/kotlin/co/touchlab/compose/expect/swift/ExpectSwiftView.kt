@@ -31,7 +31,7 @@ package co.touchlab.compose.expect.swift
 annotation class ExpectSwiftView(
     val factoryName: String = "NativeView",
     val type: ViewType = ViewType.SwiftUI,
-    val keepStateCrossNavigation: Boolean = false
+    val keepStateCrossNavigation: Boolean = false,
 )
 
 enum class ViewType {
@@ -39,3 +39,8 @@ enum class ViewType {
     UIViewController,
     UIView,
 }
+
+@Target(AnnotationTarget.FUNCTION)
+annotation class ExpectSwiftViewCustomInteropComposable(
+    val composableFqn: String
+)

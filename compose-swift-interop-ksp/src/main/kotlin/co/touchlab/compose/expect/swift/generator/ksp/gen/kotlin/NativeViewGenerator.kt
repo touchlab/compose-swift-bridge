@@ -12,14 +12,13 @@ import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.nativeV
 import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.random
 import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.remember
 import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.rememberSaveable
-import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.uiKitViewController
 import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.viewModelComposable
 import co.touchlab.compose.expect.swift.generator.ksp.util.Types.factoryFunctionName
 import co.touchlab.compose.expect.swift.generator.ksp.gen.NativeViewInfo
 import co.touchlab.compose.expect.swift.generator.ksp.gen.ViewType
 import co.touchlab.compose.expect.swift.generator.ksp.getKModifiers
 import co.touchlab.compose.expect.swift.generator.ksp.util.Types
-import co.touchlab.compose.expect.swift.generator.ksp.util.Types.Members.uiKitView
+import com.squareup.kotlinpoet.MemberName
 import net.pearx.kasechange.CaseFormat
 import net.pearx.kasechange.toPascalCase
 
@@ -190,11 +189,10 @@ fun buildNativeViewActual(
         funSpec.addCode("%M(${parameter.name}) { delegate.update$namePascalCase(${parameter.name}) }", remember)
     }
 
-    val interopComposableBasedOnViewType = when(viewInfo.viewType) {
-        ViewType.SwiftUI,
-        ViewType.UIViewController -> uiKitViewController
-        ViewType.UIView -> uiKitView
-    }
+    val interopComposableBasedOnViewType = MemberName(
+        packageName = viewInfo.renderComposableFqn.substringBeforeLast("."),
+        viewInfo.renderComposableFqn.substringAfterLast("."),
+    )
 
     funSpec.addCode("\n")
 
@@ -207,7 +205,6 @@ fun buildNativeViewActual(
         %M(
             modifier = ${viewInfo.kotlinInfo.modifierParamName ?: "%T"},
             factory = { view },
-            update = { },
         )
     """.trimIndent(), *funSpecMembers)
 

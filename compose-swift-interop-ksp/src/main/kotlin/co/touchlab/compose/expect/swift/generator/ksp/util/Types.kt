@@ -5,6 +5,7 @@ import com.squareup.kotlinpoet.MemberName
 
 object Types {
     val annotationName = "ExpectSwiftView"
+    val customInteropComposableAnnotationName = "ExpectSwiftViewCustomInteropComposable"
     val extensionPackage = "co.touchlab.compose.expect.swift"
     val extensionDelegatePackage = "$extensionPackage.delegate"
     val extensionAnnotation = "$extensionPackage.$annotationName"
@@ -49,14 +50,6 @@ object Types {
         val launchedEffect = MemberName(
             packageName = "androidx.compose.runtime",
             simpleName = "LaunchedEffect"
-        )
-        val uiKitViewController = MemberName(
-            packageName = "androidx.compose.ui.interop",
-            simpleName = "UIKitViewController"
-        )
-        val uiKitView = MemberName(
-            packageName = "androidx.compose.ui.interop",
-            simpleName = "UIKitView"
         )
         val random = MemberName(
             packageName = "kotlin.random",

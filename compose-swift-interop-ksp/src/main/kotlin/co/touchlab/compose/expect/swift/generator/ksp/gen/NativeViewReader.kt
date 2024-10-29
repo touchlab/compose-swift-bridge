@@ -38,6 +38,7 @@ data class NativeViewInfo(
     val factoryName: String,
     val viewType: ViewType,
     val keepStateCrossNavigation: Boolean,
+    val renderComposableFqn: String,
     val kotlinInfo: KotlinNativeViewInfo,
 )
 
@@ -48,11 +49,15 @@ enum class ViewType {
 }
 
 internal const val DEFAULT_FACTORY_NAME = "NativeView"
+internal const val DEFAULT_VIEWCONTROLLER_INTEROP_COMPOSABLE = "androidx.compose.ui.interop.UIKitViewController"
+internal const val DEFAULT_UIKITVIEW_INTEROP_COMPOSABLE = "androidx.compose.ui.interop.UIKitView"
 internal const val DEFAULT_KEEP_STATE_CROSS_NAVIGATION = false
 internal val DEFAULT_VIEW_TYPE = ViewType.SwiftUI
 
 fun readNativeViewComposable(
     defaultFactoryName: String,
+    defaultViewControllerInteropComposableFqn: String,
+    defaultUiKitViewInteropComposableFqn: String,
     logger: KSPLogger,
     function: KSFunctionDeclaration
 ): NativeViewInfo? {
@@ -96,6 +101,22 @@ fun readNativeViewComposable(
         ?.value as? Boolean?
         ?: DEFAULT_KEEP_STATE_CROSS_NAVIGATION // In case KSP can't resolve the default value, we fallback to the default
 
+    val customComposableFunction = function.annotations
+        .firstOrNull { it.shortName.getShortName() == Types.customInteropComposableAnnotationName }
+
+    val customComposableFunctionFqn = (customComposableFunction
+        ?.arguments
+        ?.firstOrNull { it.name?.getShortName() == "composableFqn" }
+        ?.value as? String?)
+        ?.takeIf { it.isNotBlank() }
+
+    val renderComposableFqn = customComposableFunctionFqn
+        ?: when(viewType) {
+            ViewType.SwiftUI,
+            ViewType.UIViewController -> defaultViewControllerInteropComposableFqn
+            ViewType.UIView -> defaultUiKitViewInteropComposableFqn
+        }
+
     val functionName = function.simpleName.asString()
 
     val parameters = function.parameters.map { parameter ->
@@ -130,6 +151,7 @@ fun readNativeViewComposable(
         factoryName = factoryName,
         viewType = viewType,
         keepStateCrossNavigation = keepStateCrossNavigation,
+        renderComposableFqn = renderComposableFqn,
         kotlinInfo = KotlinNativeViewInfo(
             kspRef = function,
             visibility = visibility,

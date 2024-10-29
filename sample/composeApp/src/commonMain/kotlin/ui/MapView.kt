@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import data.MapCoordinates
 import co.touchlab.compose.expect.swift.ExpectSwiftView
+import co.touchlab.compose.expect.swift.ExpectSwiftViewCustomInteropComposable
 import co.touchlab.compose.expect.swift.ViewType
 
 @ExpectSwiftView(
@@ -33,6 +34,17 @@ expect fun MapViewWithSwiftUI(
 )
 @Composable
 expect fun MapViewWithUiView(
+    modifier: Modifier = Modifier,
+    coordinate: MapCoordinates,
+    title: String,
+)
+
+@ExpectSwiftView(
+    type = ViewType.SwiftUI
+)
+@ExpectSwiftViewCustomInteropComposable("sample.ViewControllerCustom")
+@Composable
+expect fun MapViewCustomInteropComposable(
     modifier: Modifier = Modifier,
     coordinate: MapCoordinates,
     title: String,

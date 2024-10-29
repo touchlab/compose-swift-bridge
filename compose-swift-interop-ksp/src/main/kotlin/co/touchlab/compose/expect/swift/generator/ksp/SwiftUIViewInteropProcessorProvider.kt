@@ -1,6 +1,8 @@
 package co.touchlab.compose.expect.swift.generator.ksp
 
 import co.touchlab.compose.expect.swift.generator.ksp.gen.DEFAULT_FACTORY_NAME
+import co.touchlab.compose.expect.swift.generator.ksp.gen.DEFAULT_UIKITVIEW_INTEROP_COMPOSABLE
+import co.touchlab.compose.expect.swift.generator.ksp.gen.DEFAULT_VIEWCONTROLLER_INTEROP_COMPOSABLE
 import com.google.devtools.ksp.processing.NativePlatformInfo
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
@@ -22,7 +24,11 @@ internal class SwiftUIViewInteropProcessorProvider : SymbolProcessorProvider {
             codeGenerator = environment.codeGenerator,
             logger = environment.logger,
             target = generatorTargetPlatform(environment),
-            defaultFactoryName = environment.options["compose-swift-interop.defaultFactoryName"] ?: DEFAULT_FACTORY_NAME
+            defaultFactoryName = environment.options["compose-swift-interop.defaultFactoryName"] ?: DEFAULT_FACTORY_NAME,
+            defaultViewControllerInteropComposableFqn =
+                environment.options["compose-swift-interop.defaultViewControllerInteropComposableFqn"] ?: DEFAULT_VIEWCONTROLLER_INTEROP_COMPOSABLE,
+            defaultUiKitViewInteropComposableFqn =
+                environment.options["compose-swift-interop.defaultUiKitViewInteropComposableFqn"] ?: DEFAULT_UIKITVIEW_INTEROP_COMPOSABLE,
         )
 
     private fun generatorTargetPlatform(environment: SymbolProcessorEnvironment): GeneratorTarget {
