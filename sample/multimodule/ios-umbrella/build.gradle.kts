@@ -33,7 +33,7 @@ kotlin {
             api(projects.sample.multimodule.featureDetail)
             api(projects.sample.multimodule.featureList)
             api(projects.sample.multimodule.navigation)
-            implementation(projects.composeSwiftInterop)
+            implementation(projects.composeSwiftBridge)
             implementation(compose.runtime)
             implementation(compose.material)
             implementation(compose.material3)
@@ -49,7 +49,7 @@ kotlin {
 }
 
 dependencies {
-    skieSubPlugin(projects.composeSwiftInteropSkie)
+    skieSubPlugin(projects.composeSwiftBridgeSkie)
 }
 
 kotlin.sourceSets.commonMain {

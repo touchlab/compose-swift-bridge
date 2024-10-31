@@ -1,4 +1,4 @@
-rootProject.name = "compose-swift-interop-root"
+rootProject.name = "compose-swift-bridge-root"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
@@ -26,6 +26,6 @@ include(":sample:multimodule:feature-list")
 include(":sample:multimodule:ios-umbrella")
 include(":sample:multimodule:common")
 include(":sample:multimodule:navigation")
-include(":compose-swift-interop-ksp")
-include(":compose-swift-interop-skie")
-include(":compose-swift-interop")
+include(":compose-swift-bridge-ksp")
+include(":compose-swift-bridge-skie")
+include(":compose-swift-bridge")

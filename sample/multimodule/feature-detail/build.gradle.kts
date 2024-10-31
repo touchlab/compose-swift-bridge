@@ -35,7 +35,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.sample.multimodule.common)
 
-            implementation(projects.composeSwiftInterop)
+            implementation(projects.composeSwiftBridge)
             implementation(compose.runtime)
             implementation(compose.material)
             implementation(compose.material3)
@@ -61,12 +61,12 @@ android {
 }
 
 dependencies {
-    "kspCommonMainMetadata"(projects.composeSwiftInteropKsp)
-    "kspAndroid"(projects.composeSwiftInteropKsp)
+    "kspCommonMainMetadata"(projects.composeSwiftBridgeKsp)
+    "kspAndroid"(projects.composeSwiftBridgeKsp)
 
-    "kspIosSimulatorArm64"(projects.composeSwiftInteropKsp)
-    "kspIosArm64"(projects.composeSwiftInteropKsp)
-    "kspIosX64"(projects.composeSwiftInteropKsp)
+    "kspIosSimulatorArm64"(projects.composeSwiftBridgeKsp)
+    "kspIosArm64"(projects.composeSwiftBridgeKsp)
+    "kspIosX64"(projects.composeSwiftBridgeKsp)
 }
 
 ksp {

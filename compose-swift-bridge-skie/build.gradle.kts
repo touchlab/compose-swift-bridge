@@ -7,7 +7,7 @@ plugins {
 
 dependencies {
     compileOnly(libs.skie.subPlugin.core)
-    implementation(projects.composeSwiftInterop)
+    implementation(projects.composeSwiftBridge)
 }
 
 tasks.withType<KotlinCompile>().configureEach {
