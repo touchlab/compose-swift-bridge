@@ -36,7 +36,7 @@ kotlin {
 }
 
 android {
-    namespace = "co.touchlab.compose.swift.interop"
+    namespace = "co.touchlab.compose.swift.bridge"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

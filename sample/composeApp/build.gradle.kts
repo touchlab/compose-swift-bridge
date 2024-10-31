@@ -104,7 +104,7 @@ dependencies {
 }
 
 tasks.withType<KspTaskNative>().configureEach {
-    options.add(SubpluginOption("apoption", "compose-swift-interop.targetName=$target"))
+    options.add(SubpluginOption("apoption", "compose-swift-bridge.targetName=$target"))
 }
 
 tasks.withType<KotlinCompile<*>>().configureEach {

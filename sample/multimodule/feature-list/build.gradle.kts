@@ -71,11 +71,11 @@ dependencies {
 }
 
 ksp {
-    arg("compose-swift-interop.defaultFactoryName", "List")
+    arg("compose-swift-bridge.defaultFactoryName", "List")
 }
 
 tasks.withType<KspTaskNative>().configureEach {
-    options.add(SubpluginOption("apoption", "compose-swift-interop.targetName=$target"))
+    options.add(SubpluginOption("apoption", "compose-swift-bridge.targetName=$target"))
 }
 
 tasks.withType<KotlinCompile<*>>().configureEach {

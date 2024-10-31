@@ -16,4 +16,8 @@ class SwiftUINativeViewFactory : NativeViewFactory {
     func createMapViewWithSwiftUI(observable: ComposeApp.MapViewWithSwiftUIObservable) -> AnyView {
         return AnyView(NativeMapViewBindingSwiftUI(observable: observable))
     }
+    
+    func createMapViewCustomInteropComposable(observable: ComposeApp.MapViewCustomInteropComposableObservable) -> AnyView {
+        return AnyView(EmptyView())
+    }
 }

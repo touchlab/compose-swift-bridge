@@ -30,7 +30,7 @@ import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import co.touchlab.compose.expect.swift.ExpectSwiftView
+import co.touchlab.compose.swift.bridge.ExpectSwiftView
 import common.data.Restaurant
 import common.datasource.LocalRestaurantsDataSource
 import navigation.SharedScreen

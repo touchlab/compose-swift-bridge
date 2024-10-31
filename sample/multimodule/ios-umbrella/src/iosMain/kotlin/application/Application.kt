@@ -25,10 +25,10 @@ import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.jetpack.ProvideNavigatorLifecycleKMPSupport
 import cafe.adriel.voyager.navigator.CurrentScreen
 import cafe.adriel.voyager.navigator.Navigator
-import co.touchlab.compose.expect.swift.DetailFactory
-import co.touchlab.compose.expect.swift.ListFactory
-import co.touchlab.compose.expect.swift.LocalDetailFactory
-import co.touchlab.compose.expect.swift.LocalListFactory
+import co.touchlab.compose.swift.bridge.DetailFactory
+import co.touchlab.compose.swift.bridge.ListFactory
+import co.touchlab.compose.swift.bridge.LocalDetailFactory
+import co.touchlab.compose.swift.bridge.LocalListFactory
 import feature.detail.DetailScreen
 import feature.list.ListScreen
 import navigation.SharedScreen

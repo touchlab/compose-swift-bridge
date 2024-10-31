@@ -68,3 +68,12 @@ actual fun MapViewWithUiView(
 ) {
     MapView(modifier, coordinate, title)
 }
+
+@Composable
+actual fun MapViewCustomInteropComposable(
+    modifier: Modifier,
+    coordinate: MapCoordinates,
+    title: String
+) {
+    MapView(modifier, coordinate, title)
+}

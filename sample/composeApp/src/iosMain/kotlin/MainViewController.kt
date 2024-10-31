@@ -1,7 +1,7 @@
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.window.ComposeUIViewController
-import co.touchlab.compose.expect.swift.ComposeNativeViewFactory
-import co.touchlab.compose.expect.swift.LocalNativeViewFactory
+import co.touchlab.compose.swift.bridge.ComposeNativeViewFactory
+import co.touchlab.compose.swift.bridge.LocalNativeViewFactory
 import platform.UIKit.UIViewController
 import ui.AppScreen
 
