@@ -18,7 +18,10 @@ In order to run the sample you'll need to correctly configure Google Maps on And
 For that you will need a [Google Maps API key](https://developers.google.com/maps/documentation/android-sdk/get-api-key).
 
 Then you'll need to add that API key to your `local.properties` like so:
-```MAPS_API_KEY=YOUR_API_KEY```
+
+```
+MAPS_API_KEY=YOUR_API_KEY
+```
 
 > If you don't need to view the actual map, then you can leave the API key blank like so `MAPS_API_KEY=`
 
