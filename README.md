@@ -8,6 +8,19 @@ allowing to easily keep the state parameter updated in the SwiftUI View without 
 
 See docs at [Compose Swift Bridge](https://touchlab.co/composeswiftbridge)
 
+### Running The Sample
+
+The sample project showcases the Compose Swift Bridge by defining an expect/actual `MapView`. The
+sample displays a [SwiftUI MapKit Map](https://developer.apple.com/documentation/mapkit/mapkit_for_swiftui) on iOS, 
+and a [Google Maps Composable](https://github.com/googlemaps/android-maps-compose) on Android.
+
+In order to run the sample you'll need to correctly configure Google Maps on Android. 
+For that you will need a [Google Maps API key](https://developers.google.com/maps/documentation/android-sdk/get-api-key).
+
+Then you'll need to add that Api key to your `local.properties` like so:
+```MAPS_API_KEY=YOUR_API_KEY```
+
+
 ## License
 
 ```
