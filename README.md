@@ -17,7 +17,7 @@ and a [Google Maps Composable](https://github.com/googlemaps/android-maps-compos
 In order to run the sample you'll need to correctly configure Google Maps on Android (iOS does not need an API key). 
 For that you will need a [Google Maps API key](https://developers.google.com/maps/documentation/android-sdk/get-api-key).
 
-Then you'll need to add that API key to your `local.properties` like so:
+Then you'll need to create a `secrets.properties` file in the root and add that API key to your `secrets.properties` like so:
 
 ```
 MAPS_API_KEY=YOUR_API_KEY
