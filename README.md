@@ -20,6 +20,8 @@ For that you will need a [Google Maps API key](https://developers.google.com/map
 Then you'll need to add that Api key to your `local.properties` like so:
 ```MAPS_API_KEY=YOUR_API_KEY```
 
+> If you don't need to view the actual map, then you can leave the API key blank like so `MAPS_API_KEY=`
+
 
 ## License
 
