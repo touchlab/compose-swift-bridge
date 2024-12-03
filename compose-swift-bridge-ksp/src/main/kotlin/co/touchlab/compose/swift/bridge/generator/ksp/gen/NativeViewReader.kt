@@ -79,10 +79,11 @@ fun readNativeViewComposable(
     val expectSwift = function.annotations
         .firstOrNull { it.shortName.getShortName() == Types.annotationName }
 
-    val factoryName = expectSwift
+    val factoryName = (expectSwift
         ?.arguments
         ?.firstOrNull { it.name?.getShortName() == "factoryName" }
-        ?.value as? String?
+        ?.value as? String?)
+        ?.takeIf { it != DEFAULT_FACTORY_NAME }
         ?: defaultFactoryName
 
     val viewType = (expectSwift
